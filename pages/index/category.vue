@@ -34,8 +34,8 @@
           <first-two v-if="state.style === 'first_two'" :pagination="state.pagination" />
           <second-one
             v-if="state.style === 'second_one'"
-            :data="state.categoryList"
-            :activeMenu="state.activeMenu"
+            :category="state.categoryList[state.activeMenu]"
+            :data="state.brandList"
           />
           <uni-load-more
             v-if="
@@ -64,7 +64,7 @@
   import { onLoad, onReachBottom } from '@dcloudio/uni-app';
   import { computed, reactive } from 'vue';
   import _ from 'lodash';
-  import { handleTree } from '@/sheep/util';
+  import BrandApi from '@/sheep/api/product/brand';
 
   const state = reactive({
     style: 'second_one', // first_one（一级 - 样式一）, first_two（二级 - 样式二）, second_one（二级）
@@ -79,6 +79,7 @@
       pageSize: 6,
     },
     loadStatus: '',
+    brandList: [],
   });
 
   const { safeArea } = sheep.$platform.device;
@@ -90,12 +91,20 @@
     if (code !== 0) {
       return;
     }
-    state.categoryList = handleTree(data);
+    state.categoryList = data;
   }
 
   // 选中菜单
-  const onMenu = (val) => {
+  const onMenu = async (val) => {
     state.activeMenu = val;
+    const { code, data } = await BrandApi.getBrandListByCategoryId(
+      state.categoryList[state.activeMenu].id,
+    );
+    console.log(data);
+    if (code !== 0) {
+      return;
+    }
+    state.brandList = data;
     if (state.style === 'first_one' || state.style === 'first_two') {
       state.pagination.pageNo = 1;
       state.pagination.list = [];
@@ -134,9 +143,9 @@
   onLoad(async () => {
     await getList();
     // 如果是 first 风格，需要加载商品分页
-    if (state.style === 'first_one' || state.style === 'first_two') {
-      onMenu(0);
-    }
+    // if (state.style === 'first_one' || state.style === 'first_two') {
+    await onMenu(0);
+    // }
   });
 
   onReachBottom(() => {
