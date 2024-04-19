@@ -18,6 +18,29 @@
           </view>
         </view>
       </view>
+
+      <!-- 度数选择 -->
+      <view class="modal-content ss-flex-1">
+        <scroll-view scroll-y="true" class="modal-content-scroll" @touchmove.stop>
+          <view class="sku-item ss-m-b-20">
+            <view class="label-text ss-m-b-20">规格</view>
+            <view class="ss-flex ss-col-center ss-flex-wrap" v-for="(lens, index) in state.lensList">
+              <button class="ss-reset-button spec-btn" @tap="calcAvlDegrees('sph', index)">
+                {{ lens.sph === undefined ? '球镜' : lens.sph.toFixed(2) }}
+              </button>
+              <button class="ss-reset-button spec-btn" @tap="calcAvlDegrees('cyl', index)">
+                {{ lens.cyl === undefined ? '柱镜' : lens.cyl.toFixed(2) }}
+              </button>
+              <button class="ss-reset-button spec-btn" @tap="calcAvlDegrees('add', index)">
+                {{ lens.add === undefined ? '加光' : lens.add.toFixed(2) }}
+              </button>
+            </view>
+          </view>
+        </scroll-view>
+        <!-- 选择度数的弹窗 -->
+        <select-degree :show="state.showSelectDegree" :degrees="state.avlDegrees" :selected="state.selectedDegrees"
+                       @close="state.showSelectDegree = false" @on-select="onSelectDegree" />
+      </view>
     </view>
   </su-popup>
 </template>
@@ -29,6 +52,11 @@
     convertProductPropertyList,
     fen2yuan,
   } from '@/sheep/hooks/useGoods';
+  import SelectDegree from '@/sheep/components/s-select-lens-sku/components/select-degree.vue';
+  import {
+    onMounted,
+    reactive,
+  } from 'vue';
 
   const emits = defineEmits(['change', 'addCart', 'buy', 'close']);
   const props = defineProps({
@@ -43,7 +71,30 @@
     },
   });
 
-  props.goodsInfo.sku;
+  const state = reactive({
+    showSelectDegree: false,
+    avlDegrees: [],
+    selectedDegrees: undefined,
+    lensList: [{
+      sph: undefined,
+      cyl: undefined,
+      add: undefined,
+    }],
+    selectedType: undefined,
+    selectedRowIndex: undefined
+  });
+
+  const calcAvlDegrees = (type, index) => {
+    state.selectedType = type;
+    state.selectedRowIndex = index;
+    state.avlDegrees = [0, -1, -1.25];
+    state.showSelectDegree = true;
+  };
+
+  const onSelectDegree = (degree) => {
+    console.log(degree);
+    state.lensList[state.selectedRowIndex][state.selectedType] = degree;
+  };
 </script>
 
 <style lang="scss" scoped>
