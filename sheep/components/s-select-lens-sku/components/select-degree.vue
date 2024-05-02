@@ -40,6 +40,7 @@
                     :key="degree">
               {{ formatDegree(degree) }}
             </button>
+            <view class="default-text" v-if="degrees.length === 0">暂无可选度数</view>
           </view>
         </scroll-view>
       </view>
@@ -57,6 +58,13 @@
 
       .modal-content-scroll {
         max-height: 600rpx;
+
+        .default-text {
+          width: 100%;
+          text-align: center;
+          font-size: 24rpx;
+          color: #c6c6c6;
+        }
 
         .label-text {
           font-size: 26rpx;

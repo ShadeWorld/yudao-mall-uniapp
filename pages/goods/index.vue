@@ -66,7 +66,7 @@
 						:show="state.showSelectSku" @addCart="onAddCart" @buy="onBuy" @change="onSkuChange"
 						@close="state.showSelectSku = false" />
 					<s-select-lens-sku v-else :goodsInfo="state.goodsInfo" :show="state.showSelectSku"
-						@addCart="onAddCart" @buy="onBuy" @change="onSkuChange" @close="state.showSelectSku = false" />
+						@addCart="onAddCart" @buy="onBuy" @close="state.showSelectSku = false" />
 					<!-- 商品参数弹窗 -->
 					<s-spu-param :goodsInfo="state.goodsInfo" :show="state.showSpuParam"
 						@close="state.showSpuParam = false" />
@@ -161,11 +161,15 @@
 
 	// 添加购物车
 	function onAddCart(e) {
-		if (!e.id) {
-			sheep.$helper.toast('请选择商品规格');
-			return;
-		}
-		sheep.$store('cart').add(e);
+    if (e instanceof Array) {
+      sheep.$store('cart').add(...e);
+    } else {
+      if (!e.id) {
+        sheep.$helper.toast('请选择商品规格');
+        return;
+      }
+      sheep.$store('cart').add(e);
+    }
 	}
 
 	// 立即购买

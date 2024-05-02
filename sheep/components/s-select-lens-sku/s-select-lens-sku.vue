@@ -65,7 +65,10 @@
                                @change="lens.goods_num = $event === 0 ? 1 : $event" />
               </uni-col>
               <uni-col :span="6" class="col-item">
-                <button class="ss-reset-button remove-btn mini-btn" size="mini" @tap="removeSku(index)">删除</button>
+                <button class="ss-reset-button remove-btn mini-btn"
+                        :class="{'disabled-btn': state.lensList.length <= 1}" :disabled="state.lensList.length <= 1"
+                        size="mini" @tap="removeSku(index)">删除
+                </button>
               </uni-col>
             </uni-row>
           </view>
@@ -91,22 +94,18 @@
 </template>
 
 <script setup>
-  import sheep from '@/sheep';
   import {
     formatStock,
-    convertProductPropertyList,
-    fen2yuan,
   } from '@/sheep/hooks/useGoods';
   import SelectDegree from '@/sheep/components/s-select-lens-sku/components/select-degree.vue';
   import {
-    onMounted,
-    reactive,
+    reactive, watch,
   } from 'vue';
   import UniRow from '@/uni_modules/uni-row/components/uni-row/uni-row.vue';
   import SuPopup from '@/sheep/ui/su-popup/su-popup.vue';
   import UniCol from '@/uni_modules/uni-row/components/uni-col/uni-col.vue';
 
-  const emits = defineEmits(['change', 'addCart', 'buy', 'close']);
+  const emits = defineEmits(['addCart', 'buy', 'close']);
   const props = defineProps({
     goodsInfo: {
       type: Object,
@@ -123,28 +122,26 @@
     showSelectDegree: false,
     avlDegrees: [],
     selectedDegrees: undefined,
-    lensList: [{
-      sph: 0,
-      cyl: 0,
-      add: 0,
-      goods_num: 1,
-    }],
+    lensList: [],
     selectedType: undefined,
     selectedRowIndex: undefined,
   });
+  let defaultSkuLens;
 
   const calcAvlDegrees = (type, index) => {
     state.avlDegrees.splice(0);
     state.selectedType = type;
     state.selectedRowIndex = index;
     state.showSelectDegree = true;
+    let degrees = [];
+    let minDegree, maxDegree;
     switch (type) {
       case 'sph':
-        let firstSph = Math.min(props.goodsInfo.skus.map((sku) => sku.skuLens.minSph));
-        let secondSph = Math.max(props.goodsInfo.skus.map((sku) => sku.skuLens.maxSph));
-        let minSph = Math.min(firstSph, secondSph);
-        let maxSph = Math.max(firstSph, secondSph);
-        for (let i = minSph; i <= maxSph; i += 0.25) {
+        props.goodsInfo.skus.map((sku) => degrees.push(sku.skuLens.minSph, sku.skuLens.maxSph));
+        degrees.sort((a, b) => a - b);
+        minDegree = degrees[0];
+        maxDegree = degrees[degrees.length - 1];
+        for (let i = minDegree; i <= maxDegree; i += 0.25) {
           let index = props.goodsInfo.skus.findIndex((sku) => {
             let lens = sku.skuLens;
             return between(i, [lens.minSph, lens.maxSph]) && lens.skipSph.indexOf(i) === -1;
@@ -155,11 +152,11 @@
         }
         break;
       case 'cyl':
-        let firstCyl = Math.min(props.goodsInfo.skus.map((sku) => sku.skuLens.minCyl));
-        let secondCyl = Math.max(props.goodsInfo.skus.map((sku) => sku.skuLens.maxCyl));
-        let minCyl = Math.min(firstCyl, secondCyl);
-        let maxCyl = Math.max(firstCyl, secondCyl);
-        for (let i = minCyl; i <= maxCyl; i += 0.25) {
+        props.goodsInfo.skus.map((sku) => degrees.push(sku.skuLens.minCyl, sku.skuLens.maxCyl));
+        degrees.sort((a, b) => a - b);
+        minDegree = degrees[0];
+        maxDegree = degrees[degrees.length - 1];
+        for (let i = minDegree; i <= maxDegree; i += 0.25) {
           let sph = state.lensList[state.selectedRowIndex].sph;
           let union = i + sph;
           let index = props.goodsInfo.skus.findIndex((sku) => {
@@ -175,11 +172,11 @@
         }
         break;
       case 'add':
-        let firstAdd = Math.min(props.goodsInfo.skus.map((sku) => sku.skuLens.minAdd));
-        let secondAdd = Math.max(props.goodsInfo.skus.map((sku) => sku.skuLens.maxAdd));
-        let minAdd = Math.min(firstAdd, secondAdd);
-        let maxAdd = Math.max(firstAdd, secondAdd);
-        for (let i = minAdd; i <= maxAdd; i += 0.25) {
+        props.goodsInfo.skus.map((sku) => degrees.push(sku.skuLens.minAdd, sku.skuLens.maxAdd));
+        degrees.sort((a, b) => a - b);
+        minDegree = degrees[0];
+        maxDegree = degrees[degrees.length - 1];
+        for (let i = minDegree; i <= maxDegree; i += 0.25) {
           let sph = state.lensList[state.selectedRowIndex].sph;
           let index = props.goodsInfo.skus.findIndex((sku) => {
             let lens = sku.skuLens;
@@ -213,23 +210,66 @@
   };
 
   const addSku = () => {
-    state.lensList.push({
-      sph: 0,
-      cyl: 0,
-      add: 0,
-      goods_num: 1,
-    });
+    state.lensList.push(JSON.parse(JSON.stringify(defaultSkuLens)));
   };
 
   const removeSku = (index) => {
-    state.lensList.splice(index, 1);
+    if (state.lensList.length > 1) {
+      state.lensList.splice(index, 1);
+    }
   };
 
   const between = (target, interval) => {
-    interval.sort();
+    interval.sort((a, b) => a - b);
     return target >= interval[0] && target <=
       interval[1];
   };
+
+  const init = (goodsInfo) => {
+    let defaultSku;
+    let sphFilter = goodsInfo.skus.filter((sku) => between(0, [sku.skuLens.minSph, sku.skuLens.maxSph]));
+    if (sphFilter.length > 0) {
+      let cylFilter = sphFilter.filter((sku) =>
+        between(0, [sku.skuLens.minCyl, sku.skuLens.maxCyl]),
+      );
+      if (cylFilter.length > 0) {
+        defaultSku = cylFilter.find((sku) =>
+          between(0, [sku.skuLens.minAdd, sku.skuLens.maxAdd]),
+        );
+        defaultSkuLens = {
+          id: defaultSku.id,
+          sph: 0,
+          cyl: 0,
+          add: 0,
+          goods_num: 1,
+        };
+      } else {
+        defaultSku = sphFilter.skus[0];
+      }
+    } else {
+      defaultSku = goodsInfo.skus[0];
+    }
+    if (!defaultSkuLens && defaultSku) {
+      defaultSkuLens = {
+        id: defaultSku.id,
+        sph: defaultSku.minSph,
+        cyl: defaultSku.minCyl,
+        add: defaultSku.minAdd,
+        goods_num: 1,
+      };
+    }
+    state.lensList.push(JSON.parse(JSON.stringify(defaultSkuLens)));
+  };
+
+  watch(
+    () => props.goodsInfo,
+    (value) => {
+      init(value);
+    }, {
+      immediate: false, // 立即执行
+      deep: true, // 深度监听
+    },
+  );
 </script>
 
 <style lang="scss" scoped>
@@ -261,12 +301,6 @@
       background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
       color: #fff;
     }
-  }
-
-  .remove-btn {
-    border-radius: 40rpx;
-    background-color: var(--ui-BG-Main-light);
-    color: var(--ui-BG-Main);
   }
 
   .option-box {
@@ -387,10 +421,19 @@
           font-size: 26rpx;
         }
 
-        .disabled-btn {
-          font-weight: 400;
-          color: #c6c6c6;
-          background: #f8f8f8;
+        .sku-item {
+
+          .remove-btn {
+            border-radius: 40rpx;
+            background-color: var(--ui-BG-Main-light);
+            color: var(--ui-BG-Main);
+          }
+
+          .disabled-btn {
+            font-weight: 400;
+            color: #c6c6c6;
+            background: #f8f8f8;
+          }
         }
       }
     }

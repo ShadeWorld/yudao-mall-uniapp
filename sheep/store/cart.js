@@ -32,12 +32,24 @@ const cart = defineStore({
     },
 
     // 添加购物车
-    async add(goodsInfo) {
-      // 添加购物项
-      const { code } = await CartApi.addCart({
-        skuId: goodsInfo.id,
-        count: goodsInfo.goods_num,
+    async add(...goodsInfo) {
+      let data = [];
+      goodsInfo.forEach((item) => {
+        let value = {
+          skuId: item.id,
+          count: item.goods_num,
+        };
+        if (item.sph) {
+          value.cartLens = {
+            sph: item.sph,
+            cyl: item.cyl,
+            add: item.add,
+          };
+        }
+        data.push(value);
       });
+      // 添加购物项
+      const { code } = await CartApi.addCart(data);
       // 刷新购物车列表
       if (code === 0) {
         await this.getList();
@@ -78,7 +90,7 @@ const cart = defineStore({
     async selectAll(flag) {
       const { code } = await CartApi.updateCartSelected({
         ids: this.list.map((item) => item.id),
-        selected: flag
+        selected: flag,
       });
       if (code === 0) {
         await this.getList();
