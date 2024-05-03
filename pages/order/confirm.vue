@@ -16,7 +16,7 @@
         :key="item.skuId"
         :img="item.picUrl"
         :title="item.spuName"
-        :skuText="item.properties.map((property) => property.valueName).join(' ')"
+        :skuText="skuTextContent(item)"
         :price="item.price"
         :num="item.count"
         marginBottom="10"
@@ -178,6 +178,14 @@
     couponInfo: [], // 优惠劵列表
     showDiscount: false, // 是否展示营销活动
   });
+
+  function skuTextContent(item) {
+    if (item.cartLens) {
+      return '球镜:' + item.cartLens.sph.toFixed(2) + ' 柱镜:' + item.cartLens.cyl.toFixed(2) + ' 加光:' + item.cartLens.add.toFixed(2);
+    } else {
+      return item.properties.map((property) => property.valueName).join(' ')
+    }
+  }
 
   // 选择地址
   function onSelectAddress() {

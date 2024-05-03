@@ -111,12 +111,16 @@
     let goods_list = [];
     state.selectedList = state.list.filter((item) => state.selectedIds.includes(item.id));
     state.selectedList.map((item) => {
-      // 此处前端做出修改
-      items.push({
+      let value = {
         skuId: item.sku.id,
         count: item.count,
         cartId: item.id,
-      });
+      };
+      if (item.cartLens) {
+        value.cartLens = item.cartLens;
+      }
+      // 此处前端做出修改
+      items.push(value);
       goods_list.push({
         // goods_id: item.goods_id,
         goods_id: item.spu.id,

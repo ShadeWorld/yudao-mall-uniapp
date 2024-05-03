@@ -22,21 +22,25 @@ const OrderApi = {
     if (!(data.seckillActivityId > 0)) {
       delete data2.seckillActivityId;
     }
-    // 解决 SpringMVC 接受 List<Item> 参数的问题
-    delete data2.items;
-    for (let i = 0; i < data.items.length; i++) {
-      data2[encodeURIComponent('items[' + i + '' + '].skuId')] = data.items[i].skuId + '';
-      data2[encodeURIComponent('items[' + i + '' + '].count')] = data.items[i].count + '';
-      if (data.items[i].cartId) {
-        data2[encodeURIComponent('items[' + i + '' + '].cartId')] = data.items[i].cartId + '';
-      }
-    }
-    const queryString = Object.keys(data2)
-      .map((key) => key + '=' + data2[key])
-      .join('&');
+    // // 解决 SpringMVC 接受 List<Item> 参数的问题
+    // delete data2.items;
+    // for (let i = 0; i < data.items.length; i++) {
+    //   data2[encodeURIComponent('items[' + i + '' + '].skuId')] = data.items[i].skuId + '';
+    //   data2[encodeURIComponent('items[' + i + '' + '].count')] = data.items[i].count + '';
+    //   if (data.items[i].cartId) {
+    //     data2[encodeURIComponent('items[' + i + '' + '].cartId')] = data.items[i].cartId + '';
+    //   }
+    //   if (data.items[i].cartLens) {
+    //     data2[encodeURIComponent('items[' + i + '' + '].cartLens')] = data.items[i].cartLens + '';
+    //   }
+    // }
+    // const queryString = Object.keys(data2)
+    //   .map((key) => key + '=' + data2[key])
+    //   .join('&');
     return request({
-      url: `/trade/order/settlement?${queryString}`,
-      method: 'GET',
+      url: `/trade/order/settlement`,
+      data: data2,
+      method: 'POST',
       custom: {
         showError: true,
         showLoading: true,
