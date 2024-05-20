@@ -250,6 +250,26 @@
 		{
 			"root": "pages/user",
 			"pages": [{
+                    "path": "register",
+                    "style": {
+                        "navigationBarTitleText": "注册"
+                    },
+                    "meta": {
+                        "auth": false,
+                        "sync": true,
+                        "title": "注册"
+                    }
+                },{
+					"path": "login",
+					"style": {
+						"navigationBarTitleText": "登录"
+					},
+					"meta": {
+						"auth": false,
+						"sync": true,
+						"title": "登录"
+					}
+				},{
 					"path": "info",
 					"style": {
 						"navigationBarTitleText": "我的信息"

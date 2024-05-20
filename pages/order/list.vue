@@ -18,7 +18,7 @@
 					<s-goods-item
             :img="item.picUrl"
             :title="item.spuName"
-						:skuText="item.properties.map((property) => property.valueName).join(' ')"
+						:skuText="skuTextContent(item)"
 						:price="item.price"
             :num="item.count"
           />
@@ -125,6 +125,15 @@
 			value: 30,
 		},
 	];
+
+  // 商品属性文案
+  function skuTextContent(item) {
+    if (item.orderLens) {
+      return '球镜:' + item.orderLens.sph.toFixed(2) + ' 柱镜:' + item.orderLens.cyl.toFixed(2) + ' 加光:' + item.orderLens.add.toFixed(2);
+    } else {
+      return item.properties.map((property) => property.valueName).join(' ')
+    }
+  }
 
 	// 切换选项卡
 	function onTabsChange(e) {

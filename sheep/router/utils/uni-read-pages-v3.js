@@ -87,6 +87,7 @@ function uniReadPagesV3Plugin({ pagesJsonDir, includes }) {
     pagesJsonDir,
     includes,
   });
+  console.log(pages.routesMap)
   return {
     name: 'uni-read-pages-v3',
     config(config) {

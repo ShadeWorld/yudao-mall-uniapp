@@ -152,10 +152,20 @@ export default class SheepPay {
 
   // 支付链接  TODO 芋艿：待接入
   async redirectPay() {
-    let { error, data } = await this.prepay();
-    if (error === 0) {
+    let { code, data } = await this.prepay('alipay_wap');
+    // 直接返回已支付的情况，例如说扫码支付
+    if (data.status === 10) {
       const redirect_url = `${getRootUrl()}pages/pay/result?id=${this.id}&payment=${this.payment}&orderType=${this.orderType}`;
       location.href = data.pay_data + encodeURIComponent(redirect_url);
+    }
+
+    // 展示对应的界面
+    if (data.displayMode === 'url') {
+      location.href = data.displayContent
+    } else if (data.displayMode === 'qr_code') {
+      displayQrCode(channelCode, data)
+    } else if (data.displayMode === 'app') {
+      displayApp(channelCode)
     }
   }
 
@@ -332,8 +342,9 @@ export function getPayMethods(channels) {
   // 2. 处理【支付宝支付】
   const alipayMethod = payMethods[1];
   if ((platform === 'WechatOfficialAccount' && channels.includes('alipay_wap'))
-    || platform === 'WechatMiniProgram' && channels.includes('alipay_wap')
-    || platform === 'App' && channels.includes('alipay_app')) {
+    || (platform === 'WechatMiniProgram' && channels.includes('alipay_wap'))
+    || (platform === 'App' && channels.includes('alipay_app'))
+    || (platform === 'H5' && channels.includes('alipay_wap'))) {
     alipayMethod.disabled = false;
   }
   // 3. 处理【余额支付】

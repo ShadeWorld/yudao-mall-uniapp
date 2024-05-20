@@ -1,6 +1,6 @@
 <!-- 自定义导航栏 -->
 <template>
-  <view class="uni-navbar" :class="{ 'uni-dark': dark }">
+  <view class="uni-navbar" :class="{ 'uni-dark': dark, 'height': state.statusBarHeight + 'px' }">
     <view
       :class="{
         'uni-navbar--fixed': fixed,
@@ -93,7 +93,7 @@
   import sheep from '@/sheep';
   import { onLoad } from '@dcloudio/uni-app';
   import { showMenuTools, closeMenuTools } from '@/sheep/hooks/useModal';
-  import { computed, ref } from 'vue';
+  import { computed, reactive, ref } from 'vue';
 
   /**
    * NavBar 自定义导航栏
@@ -202,6 +202,9 @@
       default: '',
     },
   });
+  const state = reactive({
+    statusBarHeight: 0
+  })
 
   const capsuleStyle = computed(() => {
     return {
@@ -255,6 +258,8 @@
     if (uni.report && props.title !== '') {
       uni.report('title', props.title);
     }
+    let windowInfo = uni.getWindowInfo();
+    state.statusBarHeight = windowInfo.statusBarHeight;
   });
 
   const hasHistory = sheep.$router.hasHistory();

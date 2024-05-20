@@ -57,9 +57,17 @@ const _go = (
     return;
   }
 
+
+  let auth = nextRoute.meta?.auth
+  console.log('路游戏')
+  console.log(auth);
+  console.log(nextRoute);
   // 页面登录拦截
-  if (nextRoute.meta?.auth && !$store('user').isLogin) {
-    showAuthModal();
+  if (!$store('user').isLogin && (auth === undefined || auth)) {
+    uni.redirectTo({
+      url: '/pages/user/login'
+    });
+    // showAuthModal();
     return;
   }
 

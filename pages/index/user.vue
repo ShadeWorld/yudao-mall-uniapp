@@ -3,7 +3,6 @@
   <s-layout
     title="我的"
     tabbar="/pages/index/user"
-    navbar="custom"
     :bgStyle="template.page"
     :navbarStyle="template.navigationBar"
     onShareAppMessage

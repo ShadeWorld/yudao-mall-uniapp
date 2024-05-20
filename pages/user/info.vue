@@ -48,23 +48,23 @@
             :placeholderStyle="placeholderStyle"
           />
         </uni-forms-item>
-        <uni-forms-item name="sex" label="性别">
-          <view class="ss-flex ss-col-center ss-h-100">
-            <radio-group @change="onChangeGender" class="ss-flex ss-col-center">
-              <label class="radio" v-for="item in sexRadioMap" :key="item.value">
-                <view class="ss-flex ss-col-center ss-m-r-32">
-                  <radio
-                    :value="item.value"
-                    color="var(--ui-BG-Main)"
-                    style="transform: scale(0.8)"
-                    :checked="parseInt(item.value) === state.model?.sex"
-                  />
-                  <view class="gender-name">{{ item.name }}</view>
-                </view>
-              </label>
-            </radio-group>
-          </view>
-        </uni-forms-item>
+<!--        <uni-forms-item name="sex" label="性别">-->
+<!--          <view class="ss-flex ss-col-center ss-h-100">-->
+<!--            <radio-group @change="onChangeGender" class="ss-flex ss-col-center">-->
+<!--              <label class="radio" v-for="item in sexRadioMap" :key="item.value">-->
+<!--                <view class="ss-flex ss-col-center ss-m-r-32">-->
+<!--                  <radio-->
+<!--                    :value="item.value"-->
+<!--                    color="var(&#45;&#45;ui-BG-Main)"-->
+<!--                    style="transform: scale(0.8)"-->
+<!--                    :checked="parseInt(item.value) === state.model?.sex"-->
+<!--                  />-->
+<!--                  <view class="gender-name">{{ item.name }}</view>-->
+<!--                </view>-->
+<!--              </label>-->
+<!--            </radio-group>-->
+<!--          </view>-->
+<!--        </uni-forms-item>-->
 
         <uni-forms-item name="mobile" label="手机号" @tap="onChangeMobile">
           <uni-easyinput

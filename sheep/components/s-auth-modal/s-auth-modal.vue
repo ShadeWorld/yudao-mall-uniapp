@@ -3,11 +3,11 @@
   <su-popup :show="authType !== ''" round="10" :showClose="true" @close="closeAuthModal">
     <view class="login-wrap">
       <!-- 1. 账号密码登录 accountLogin -->
-      <account-login
-        v-if="authType === 'accountLogin'"
-        :agreeStatus="state.protocol"
-        @onConfirm="onConfirm"
-      />
+<!--      <account-login-->
+<!--        v-if="authType === 'accountLogin'"-->
+<!--        :agreeStatus="state.protocol"-->
+<!--        @onConfirm="onConfirm"-->
+<!--      />-->
 
       <!-- 2. 短信登录  smsLogin -->
       <sms-login v-if="authType === 'smsLogin'" :agreeStatus="state.protocol" @onConfirm="onConfirm" />

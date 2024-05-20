@@ -1,7 +1,7 @@
 <!-- 首页，支持店铺装修 -->
 <template>
 	<view v-if="template">
-		<s-layout title="首页" navbar="custom" tabbar="/pages/index/index" :bgStyle="template.page"
+		<s-layout title="首页" tabbar="/pages/index/index" :bgStyle="template.page"
 			:navbarStyle="template.navigationBar" onShareAppMessage>
 			<s-block v-for="(item, index) in template.components" :key="index" :styles="item.property.style">
 				<s-block-item :type="item.id" :data="item.property" :styles="item.property.style" />
