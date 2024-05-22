@@ -500,8 +500,6 @@
        * @param {Object} type
        */
       setProgress(progressEvent, index, type) {
-        const fileLenth = this.files.length;
-        const percentNum = (index / fileLenth) * 100;
         const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         let idx = index;
         if (!type) {

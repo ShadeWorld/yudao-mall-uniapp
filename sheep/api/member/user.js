@@ -79,6 +79,19 @@ const UserApi = {
       }
     });
   },
+  // 注册
+  register: (data) => {
+    return request({
+      url: '/member/user/register',
+      method: 'POST',
+      data,
+      custom: {
+        loadingMsg: '验证中',
+        showSuccess: true,
+        successMsg: '注册成功，审核通过后才能登录'
+      }
+    });
+  },
 
 };
 
