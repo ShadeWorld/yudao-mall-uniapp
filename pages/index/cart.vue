@@ -115,8 +115,9 @@
         skuId: item.sku.id,
         count: item.count,
         cartId: item.id,
+        categoryId: item.spu.categoryId,
       };
-      if (item.cartLens) {
+      if (item.hasOwnProperty('cartLens')) {
         value.cartLens = item.cartLens;
       }
       // 此处前端做出修改

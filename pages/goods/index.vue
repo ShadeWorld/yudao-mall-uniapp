@@ -44,7 +44,7 @@
 
               <!-- 优惠劵 -->
               <view class="get-coupon-box ss-flex ss-col-center ss-m-l-20" @tap="state.showModel = true"
-                    v-if="state.couponInfo.length">
+                    v-if="state.couponInfo.length > 0">
                 <view class="discounts-title ss-m-r-8">领券</view>
                 <text class="cicon-forward"></text>
               </view>
@@ -164,6 +164,7 @@
   // 添加购物车
   function onAddCart(e) {
     if (e instanceof Array) {
+      console.log(e)
       sheep.$store('cart').add(...e);
     } else {
       if (!e.id) {
@@ -182,6 +183,7 @@
           {
             skuId: item.id,
             count: item.goods_num,
+            categoryId: item.categoryId,
             cartLens: {
               sph: item.sph,
               cyl: item.cyl,
@@ -199,6 +201,7 @@
       }
       data = {
         items: [{
+          categoryId: e.categoryId,
           skuId: e.id,
           count: e.goods_num,
         }],
@@ -255,12 +258,15 @@
   });
 
   async function getCoupon() {
-    const {
-      code,
-      data,
-    } = await CouponApi.getCouponTemplateList(state.goodsId, 2, 10);
+    // 查询商品券
+    const { code, data, } = await CouponApi.getCouponTemplateList(state.goodsId, 2, 10);
     if (code === 0) {
-      state.couponInfo = data;
+      state.couponInfo.push(data);
+    }
+    // 查询品类券
+    const { code1, data1, } = await CouponApi.getCouponTemplateList(state.goodsId, 3, 10);
+    if (code1 === 0) {
+      state.couponInfo.push(data1);
     }
   }
 

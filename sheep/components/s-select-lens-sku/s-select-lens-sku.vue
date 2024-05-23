@@ -205,7 +205,6 @@
   };
 
   const onSelectDegree = (degree) => {
-    console.log(degree);
     state.lensList[state.selectedRowIndex][state.selectedType] = degree;
   };
 
@@ -242,6 +241,7 @@
           cyl: 0,
           add: 0,
           goods_num: 1,
+          categoryId: goodsInfo.categoryId,
         };
       } else {
         defaultSku = sphFilter.skus[0];
@@ -256,6 +256,7 @@
         cyl: defaultSku.minCyl,
         add: defaultSku.minAdd,
         goods_num: 1,
+        categoryId: goodsInfo.categoryId,
       };
     }
     state.lensList.push(JSON.parse(JSON.stringify(defaultSkuLens)));

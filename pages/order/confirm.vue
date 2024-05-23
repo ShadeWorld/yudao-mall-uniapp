@@ -271,9 +271,9 @@
   async function getCoupons() {
     const { code, data } = await CouponApi.getMatchCouponList(
       state.orderInfo.price.payPrice,
-      state.orderInfo.items.map((item) => item.spuId),
-      state.orderPayload.items.map((item) => item.skuId),
-      state.orderPayload.items.map((item) => item.categoryId),
+      [...new Set(state.orderInfo.items.map((item) => item.spuId))],
+      [...new Set(state.orderPayload.items.map((item) => item.skuId))],
+      [...new Set(state.orderPayload.items.map((item) => item.categoryId))],
     );
     if (code === 0) {
       state.couponInfo = data;

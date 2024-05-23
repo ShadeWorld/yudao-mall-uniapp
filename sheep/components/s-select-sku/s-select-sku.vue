@@ -260,6 +260,8 @@
 		if (choosePropertyId.length === propertyList.length && newSkuList.length) {
 			newSkuList[0].goods_num = state.selectedSku.goods_num || 1;
 			state.selectedSku = newSkuList[0];
+      state.selectedSku.categoryId = props.goodsInfo.categoryId
+      console.log(state.selectedSku);
 		} else {
 			state.selectedSku = {};
 		}

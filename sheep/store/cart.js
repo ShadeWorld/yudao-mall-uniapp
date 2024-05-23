@@ -39,7 +39,7 @@ const cart = defineStore({
           skuId: item.id,
           count: item.goods_num,
         };
-        if (item.sph) {
+        if (item.hasOwnProperty('sph')) {
           value.cartLens = {
             sph: item.sph,
             cyl: item.cyl,
