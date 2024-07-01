@@ -187,24 +187,22 @@
         <uni-forms-item name="businessLicense" label="上传营业执照*">
           <s-uploader
             @update:model-value="args => state.model.businessLicense = args.url"
-            fileMediatype="image"
+            fileMediatype="all"
             mode="grid"
             limit="1"
-            file-mediatype="all"
           >
-            <button class="upload-btn ss-row-center" size="mini">选择文件</button>
+            <button class="upload-btn ss-row-center ss-reset-button" size="mini">选择文件</button>
           </s-uploader>
         </uni-forms-item>
 
         <uni-forms-item name="shopfront" label="上传门头照片*">
           <s-uploader
             @update:model-value="args => state.model.shopFront = args.url"
-            fileMediatype="image"
+            fileMediatype="all"
             mode="grid"
             limit="1"
-            file-mediatype="all"
           >
-            <button class="upload-btn ss-row-center" size="mini">选择文件</button>
+            <button class="upload-btn ss-row-center ss-reset-button" size="mini">选择文件</button>
           </s-uploader>
         </uni-forms-item>
 
