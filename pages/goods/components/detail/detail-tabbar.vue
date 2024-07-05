@@ -26,16 +26,16 @@
           </block>
         </view>
         <view
-          v-if="serviceIcon"
+          v-if="cartIcon"
           class="detail-tabbar-item ss-flex ss-flex-col ss-row-center ss-col-center"
-          @tap="onChat"
+          @tap="toChart"
         >
           <image
             class="item-icon"
-            :src="sheep.$url.static('/static/img/shop/goods/message.png')"
+            :src="sheep.$url.static('/static/img/shop/goods/cart.png')"
             mode="aspectFit"
           />
-          <view class="item-title">客服</view>
+          <view class="item-title">购物车</view>
         </view>
         <view
           v-if="shareIcon"
@@ -48,6 +48,18 @@
             mode="aspectFit"
           />
           <view class="item-title">分享</view>
+        </view>
+        <view
+          v-if="serviceIcon"
+          class="detail-tabbar-item ss-flex ss-flex-col ss-row-center ss-col-center"
+          @tap="onChat"
+        >
+          <image
+            class="item-icon"
+            :src="sheep.$url.static('/static/img/shop/goods/message.png')"
+            mode="aspectFit"
+          />
+          <view class="item-title">客服</view>
         </view>
         <slot></slot>
       </view>
@@ -108,6 +120,10 @@
       type: Boolean,
       default: true,
     },
+    cartIcon: {
+      type: Boolean,
+      default: true,
+    },
     shareIcon: {
       type: Boolean,
       default: true,
@@ -138,6 +154,10 @@
     sheep.$router.go('/pages/chat/index', {
       id: props.modelValue.id,
     });
+  };
+
+  const toChart = () => {
+    sheep.$router.go('/pages/index/cart');
   };
 </script>
 

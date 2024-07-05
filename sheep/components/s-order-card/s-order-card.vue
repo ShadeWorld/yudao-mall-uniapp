@@ -31,7 +31,7 @@
     {
       title: '待付款',
       value: '1',
-      icon: '/static/img/shop/order/no_pay.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/68624f18f42bcd90e1779b2bfd45e91d9149893f7b721230eadf12385e88a78f.png',
       path: '/pages/order/list',
       type: 'unpaid',
       count: 'unpaidCount',
@@ -39,7 +39,7 @@
     {
       title: '待收货',
       value: '3',
-      icon: '/static/img/shop/order/no_take.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/e33a87393690c7bf6b8a45a746361c22ccbb95d233b539d3f5d6f03a129bb959.png',
       path: '/pages/order/list',
       type: 'noget',
       count: 'deliveredCount',
@@ -47,7 +47,7 @@
     {
       title: '待评价',
       value: '4',
-      icon: '/static/img/shop/order/no_comment.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/273cfa7b594213f74cc080c270c9923b21af6a8d4db32d3e10e8b420d233a588.png',
       path: '/pages/order/list',
       type: 'nocomment',
       count: 'uncommentedCount',
@@ -55,7 +55,7 @@
     {
       title: '售后单',
       value: '0',
-      icon: '/static/img/shop/order/change_order.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/096208fe06bc0a19b26fd7e78849f3af215531de58df4ed0d41e844e07f7df66.png',
       path: '/pages/order/aftersale/list',
       type: 'aftersale',
       count: 'afterSaleCount',
@@ -63,7 +63,7 @@
     {
       title: '全部订单',
       value: '0',
-      icon: '/static/img/shop/order/all_order.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/461556736eecce68954cb8ff09312bd1398f7d8ccb3b74b558bbb693c00595b5.png',
       path: '/pages/order/list',
     },
   ];

@@ -82,17 +82,14 @@
         <detail-activity-tip v-if="state.activityList.length > 0" :activity-list="state.activityList" />
 
         <!-- 详情 tabbar -->
-        <detail-tabbar v-model="state.goodsInfo">
-          <view class="buy-box ss-flex ss-col-center ss-p-r-20" v-if="state.goodsInfo.stock > 0">
+        <detail-tabbar v-model="state.goodsInfo" :serviceIcon="false">
+          <view class="buy-box ss-flex ss-col-center ss-p-r-20">
             <button class="ss-reset-button add-btn ui-Shadow-Main" @tap="state.showSelectSku = true">
               加入购物车
             </button>
             <button class="ss-reset-button buy-btn ui-Shadow-Main" @tap="state.showSelectSku = true">
               立即购买
             </button>
-          </view>
-          <view class="buy-box ss-flex ss-col-center ss-p-r-20" v-else>
-            <button class="ss-reset-button disabled-btn" disabled> 已售罄</button>
           </view>
         </detail-tabbar>
 
