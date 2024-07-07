@@ -129,7 +129,6 @@
             field="id as value, name as text"
             :map="{text: 'name', value: 'id'}"
           >
-
           </uni-data-picker>
         </uni-forms-item>
 

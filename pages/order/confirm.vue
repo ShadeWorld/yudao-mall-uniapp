@@ -61,11 +61,12 @@
           </view>
         </view>
         <view class="order-item ss-flex ss-col-center ss-row-between">
-          <view class="item-title">运费</view>
-          <view class="ss-flex ss-col-center">
+          <view class="item-title">配送方式</view>
+          <view class="ss-flex ss-col-center" @tap="state.showDeliveryTemplate = true">
             <text class="item-value ss-m-r-24">
               +￥{{ fen2yuan(state.orderInfo.price.deliveryPrice) }}
             </text>
+            <text class="_icon-forward item-icon" />
           </view>
         </view>
         <!-- 优惠劵：只有 type = 0 普通订单（非拼团、秒杀、砍价），才可以使用优惠劵 -->
@@ -132,6 +133,14 @@
       @close="state.showCoupon = false"
     />
 
+    <!-- 选择优惠券弹框 -->
+    <s-delivery-select
+      v-model="state.deliveryTemplateInfo"
+      :show="state.showDeliveryTemplate"
+      @confirm="onSelectDelivery"
+      @close="state.showDeliveryTemplate = false"
+    />
+
     <!-- 满额折扣弹框 TODO 芋艿：后续要把优惠信息打进去 -->
     <s-discount-list
       v-model="state.orderInfo"
@@ -164,8 +173,10 @@
   import sheep from '@/sheep';
   import { isEmpty } from 'lodash';
   import OrderApi from '@/sheep/api/trade/order';
+  import DeliveryApi from '@/sheep/api/trade/delivery';
   import CouponApi from '@/sheep/api/promotion/coupon';
   import { fen2yuan } from '@/sheep/hooks/useGoods';
+  import SDeliverySelect from '@/sheep/components/s-delivery-select/s-delivery-select.vue';
 
   const state = reactive({
     orderPayload: {},
@@ -176,12 +187,18 @@
     addressInfo: {}, // 选择的收货地址
     showCoupon: false, // 是否展示优惠劵
     couponInfo: [], // 优惠劵列表
+    showDeliveryTemplate: false, // 是否展示配送方式
+    deliveryTemplateInfo: [], // 配送方式列表
     showDiscount: false, // 是否展示营销活动
   });
 
   function skuTextContent(item) {
-    if (item.cartLens) {
-      return '球镜:' + item.cartLens.sph.toFixed(2) + ' 柱镜:' + item.cartLens.cyl.toFixed(2) + ' 加光:' + item.cartLens.add.toFixed(2);
+    if (item.orderLensList) {
+      let content = '';
+      item.orderLensList.forEach((lens) => {
+        content += '球镜:' + lens.sph.toFixed(2) + ' 柱镜:' + lens.cyl.toFixed(2) + ' 加光:' + lens.add.toFixed(2)
+      })
+      return content;
     } else {
       return item.properties.map((property) => property.valueName).join(' ')
     }
@@ -210,6 +227,13 @@
     state.showCoupon = false;
   }
 
+  // 选择优惠券
+  async function onSelectDelivery(deliveryTemplateId) {
+    state.orderPayload.deliveryTemplateId = deliveryTemplateId || 0;
+    await getOrderInfo();
+    state.showDeliveryTemplate = false;
+  }
+
   // 提交订单
   function onConfirm() {
     if (!state.addressInfo.id) {
@@ -224,7 +248,8 @@
     const { code, data } = await OrderApi.createOrder({
       items: state.orderPayload.items,
       couponId: state.orderPayload.couponId,
-      addressId: state.addressInfo.id
+      addressId: state.addressInfo.id,
+      deliveryTemplateId: state.orderInfo.deliveryTemplateId
     });
     if (code !== 0) {
       return;
@@ -256,6 +281,7 @@
       return;
     }
     state.orderInfo = data;
+    state.orderPayload.deliveryTemplateId = data.deliveryTemplateId;
     // 设置收货地址
     if (state.orderInfo.address) {
       state.addressInfo = state.orderInfo.address;
@@ -275,6 +301,19 @@
     }
   }
 
+  // 获取可用的配送方式
+  async function getDeliveryTemplates() {
+    const { code, data } = await DeliveryApi.getDeliveryExpressTemplateList(state.addressInfo.areaId);
+    if (code === 0) {
+      state.deliveryTemplateInfo = data;
+      state.deliveryTemplateInfo.forEach(i => {
+        if (i.id === state.orderPayload.deliveryTemplateId) {
+          i.selected = true;
+        }
+      });
+    }
+  }
+
   onLoad(async (options) => {
     if (!options.data) {
       sheep.$helper.toast('参数不正确，请检查！');
@@ -283,6 +322,7 @@
     state.orderPayload = JSON.parse(options.data);
     await getOrderInfo();
     await getCoupons();
+    await getDeliveryTemplates();
   });
 </script>
 

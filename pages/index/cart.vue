@@ -73,7 +73,8 @@
 <script setup>
   import sheep from '@/sheep';
   import { computed, reactive } from 'vue';
-  import { fen2yuan } from '../../sheep/hooks/useGoods';
+  import { fen2yuan } from '@/sheep/hooks/useGoods';
+  import { cloneDeep } from 'lodash';
 
   const sys_navBar = sheep.$platform.navbar;
   const cart = sheep.$store('cart');
@@ -111,14 +112,22 @@
     let goods_list = [];
     state.selectedList = state.list.filter((item) => state.selectedIds.includes(item.id));
     state.selectedList.map((item) => {
-      let value = {
-        skuId: item.sku.id,
-        count: item.count,
-        cartId: item.id,
-        categoryId: item.spu.categoryId,
-      };
+      let value = items.find((exists) => exists.skuId === item.skuId);
+      if (!value) {
+        value = {
+          skuId: item.sku.id,
+          count: item.count,
+          cartId: item.id,
+          categoryId: item.spu.categoryId,
+          orderLensList: []
+        }
+      } else {
+        value.count += item.count
+      }
       if (item.hasOwnProperty('cartLens')) {
-        value.cartLens = item.cartLens;
+        let orderLens = cloneDeep(item.cartLens);
+        orderLens.count = item.count;
+        value.orderLensList.push(orderLens);
       }
       // 此处前端做出修改
       items.push(value);

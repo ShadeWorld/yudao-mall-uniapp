@@ -114,10 +114,10 @@ export function formatOrderStatus(order) {
   if (order.status === 0) {
     return '待付款';
   }
-  if (order.status === 10 && order.deliveryType === 1) {
+  if (order.status === 10) {
     return '待发货';
   }
-  if (order.status === 10 && order.deliveryType === 2) {
+  if (order.status === 10) {
     return '待核销';
   }
   if (order.status === 20) {
@@ -169,7 +169,7 @@ export function handleOrderButtons(order) {
   if (order.status === 20) { // 确认收货
     order.buttons.push('confirm');
   }
-  if (order.logisticsId > 0) { // 查看物流
+  if (order.logisticsNo > 0) { // 查看物流
     order.buttons.push('express');
   }
   if (order.status === 0) { // 取消订单 / 发起支付

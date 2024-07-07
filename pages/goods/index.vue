@@ -181,7 +181,7 @@
             skuId: item.id,
             count: item.goods_num,
             categoryId: item.categoryId,
-            cartLens: {
+            orderLensList: {
               sph: item.sph,
               cyl: item.cyl,
               add: item.add,

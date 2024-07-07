@@ -11,7 +11,7 @@ const DeliveryApi = {
   // 获得快递公司列表
   getDeliveryExpressTemplateList: (areaId) => {
     return request({
-      url: `/trade/delivery/express/list?areaId=${areaId}`,
+      url: `/trade/delivery/express-template/list-all-simple?areaId=${areaId}`,
       method: 'get',
     });
   },
