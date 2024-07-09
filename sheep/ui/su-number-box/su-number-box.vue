@@ -1,11 +1,12 @@
 <template>
   <view class="uni-numbox">
-    <!-- <view @click="_calcValue('minus')" class="uni-numbox__minus uni-numbox-btns" :style="{ background }"> -->
+<!--     <view @click="_calcValue('minus')" class="uni-numbox__minus uni-numbox-btns" :style="{ background }">-->
     <!-- <text class="uni-numbox--text" :class="{ 'uni-numbox--disabled': inputValue <= min || disabled }"
 				:style="{ color }">
 				-
 			</text> -->
     <text
+      v-if="controls"
       class="cicon-move-round"
       :class="{
         'uni-numbox--disabled': inputValue <= min || disabled,
@@ -28,6 +29,7 @@
 			<text class="uni-numbox--text" :class="{ 'uni-numbox--disabled': inputValue >= max || disabled }">+</text>
 		</view> -->
     <text
+      v-if="controls"
       class="cicon-add-round"
       :class="{
         'uni-numbox--disabled': inputValue >= max || disabled,
@@ -90,6 +92,10 @@
       disabled: {
         type: Boolean,
         default: false,
+      },
+      controls: {
+        type: Boolean,
+        default: true,
       },
       activity: {
         type: String,
@@ -173,6 +179,9 @@
         } else if (value < this.min) {
           value = this.min;
         }
+        if (Number.isNaN(value)) {
+          value = this.min;
+        }
         const scale = this._getDecimalScale();
         this.inputValue = value.toFixed(String(scale).length - 1);
         this.$emit('change', +this.inputValue);
@@ -202,7 +211,7 @@
   .uni-numbox__value {
     width: 74rpx;
     text-align: center;
-    font-size: 30rpx;
+    //font-size: 30rpx;
   }
 
   .cicon-move-round {

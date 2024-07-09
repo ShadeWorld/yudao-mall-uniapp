@@ -24,27 +24,38 @@
         <scroll-view scroll-y="true" class="modal-content-scroll" @touchmove.stop>
           <view class="sku-item ss-m-b-20">
             <uni-row class="tb-header">
-              <uni-col :span="4">
+              <uni-col :span="3">
                 <view class="col-item">球镜</view>
               </uni-col>
-              <uni-col :span="4">
+              <uni-col :span="3">
                 <view class="col-item">柱镜</view>
               </uni-col>
-              <uni-col :span="4">
+              <uni-col :span="3">
                 <view class="col-item">加光</view>
+              </uni-col>
+              <uni-col :span="3"
+                       v-if="goodsInfo.lensProperty.distinguishEye">
+                <view class="col-item">左右</view>
+              </uni-col>
+              <uni-col :span="3"
+                       v-if="showAxis">
+                <view class="col-item">轴位</view>
+              </uni-col>
+              <uni-col :span="3">
+                <view class="col-item">数量</view>
               </uni-col>
               <uni-col :span="12">
               </uni-col>
             </uni-row>
             <uni-row class="ss-flex ss-row-between tb-row" v-for="(lens, index) in state.lensList">
-              <uni-col :span="4" class="col-item">
+              <uni-col :span="3" class="col-item">
                 <view class="ss-flex ss-flex-wrap ss-row-center">
                   <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('sph', index)">
                     {{ lens.sph.toFixed(2) }}
                   </button>
                 </view>
               </uni-col>
-              <uni-col :span="4" class="col-item">
+              <uni-col :span="3" class="col-item">
                 <view class="ss-flex ss-flex-wrap ss-row-center">
                   <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('cyl', index)"
                           :disabled="!lens.sph" :class="{'disabled-btn': !lens.sph}">
@@ -52,7 +63,7 @@
                   </button>
                 </view>
               </uni-col>
-              <uni-col :span="4" class="col-item">
+              <uni-col :span="3" class="col-item">
                 <view class="ss-flex ss-flex-wrap ss-row-center">
                   <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('add', index)"
                           :disabled="!lens.sph && !lens.cyl" :class="{'disabled-btn': !lens.sph && !lens.cyl}">
@@ -60,11 +71,28 @@
                   </button>
                 </view>
               </uni-col>
-              <uni-col :span="6" style="padding-left: 8rpx">
-                <su-number-box :min="1" :step="1" v-model="lens.goods_num"
-                               @change="lens.goods_num = $event === 0 ? 1 : $event" />
+              <uni-col :span="3" class="col-item">
+                <view class="ss-flex ss-flex-wrap ss-row-center">
+                  <button class="ss-reset-button spec-btn lens-btn"
+                          @tap="() => {state.showSelectLeftOrRight = true; state.selectedRowIndex = index;}"
+                          v-if="goodsInfo.lensProperty.distinguishEye">
+                    {{ lens.leftOrRight === undefined ? '' : lens.leftOrRight === 1 ? '左' : '右' }}
+                  </button>
+                </view>
               </uni-col>
-              <uni-col :span="6" class="col-item">
+              <uni-col :span="3" style="padding-left: 8rpx" v-if="showAxis">
+                <view class="num-input">
+                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false"
+                                 @change="lens.axis = $event === 0 ? 1 : $event" />
+                </view>
+              </uni-col>
+              <uni-col :span="3" style="padding-left: 8rpx">
+                <view class="num-input">
+                  <su-number-box :min="1" :step="1" v-model="lens.goods_num" :controls="false"
+                                 @change="lens.goods_num = $event === 0 ? 1 : $event" />
+                </view>
+              </uni-col>
+              <uni-col :span="6" class="del-btn-item">
                 <button class="ss-reset-button remove-btn mini-btn"
                         :class="{'disabled-btn': state.lensList.length <= 1}" :disabled="state.lensList.length <= 1"
                         size="mini" @tap="removeSku(index)">删除
@@ -80,6 +108,10 @@
         <!-- 选择度数的弹窗 -->
         <select-degree :show="state.showSelectDegree" :degrees="state.avlDegrees" :selected="state.selectedDegrees"
                        @close="state.showSelectDegree = false" @on-select="onSelectDegree" />
+        <!-- 选择左右弹窗 -->
+        <select-degree :show="state.showSelectLeftOrRight" :degrees="[{name:'左', value: 1},{name:'右', value: 2}]"
+                       :selected="state.selectedLeftOrRight"
+                       @close="state.showSelectLeftOrRight = false" @on-select="onSelectLeftOrRight" />
       </view>
 
       <!-- 操作区 -->
@@ -99,6 +131,7 @@
   } from '@/sheep/hooks/useGoods';
   import SelectDegree from '@/sheep/components/s-select-lens-sku/components/select-degree.vue';
   import {
+    computed,
     reactive, watch,
   } from 'vue';
   import UniRow from '@/uni_modules/uni-row/components/uni-row/uni-row.vue';
@@ -118,7 +151,15 @@
     },
   });
 
+  const showAxis = computed(() => {
+    return props.goodsInfo.skus.findIndex(i => {
+      return (i.skuLens.minCyl !== 0 || i.skuLens.maxCyl !== 0) && (i.skuLens.minAdd !== 0 || i.skuLens.maxAdd !== 0);
+    }) > -1;
+  });
+
   const state = reactive({
+    showSelectLeftOrRight: false,
+    selectedLeftOrRight: undefined,
     showSelectDegree: false,
     avlDegrees: [],
     selectedDegrees: undefined,
@@ -147,7 +188,7 @@
             return between(i, [lens.minSph, lens.maxSph]) && lens.skipSph.indexOf(i) === -1;
           });
           if (index > -1) {
-            state.avlDegrees.push(i);
+            state.avlDegrees.push({ name: i.toFixed(2), value: i });
           }
         }
         break;
@@ -167,7 +208,7 @@
               && (between(union, [lens.maxUnion, lens.minUnion]) || (lens.maxUnion === 0 && lens.minUnion === 0));
           });
           if (index > -1) {
-            state.avlDegrees.push(i);
+            state.avlDegrees.push({ name: i.toFixed(2), value: i });
           }
         }
         break;
@@ -185,7 +226,7 @@
               && lens.skipAdd.indexOf(i) === -1 && lens.skipSph.indexOf(sph) === -1;
           });
           if (index > -1) {
-            state.avlDegrees.push(i);
+            state.avlDegrees.push({ name: i.toFixed(2), value: i });
           }
         }
         break;
@@ -206,6 +247,10 @@
 
   const onSelectDegree = (degree) => {
     state.lensList[state.selectedRowIndex][state.selectedType] = degree;
+  };
+
+  const onSelectLeftOrRight = (leftOrRight) => {
+    state.lensList[state.selectedRowIndex].leftOrRight = leftOrRight;
   };
 
   const addSku = () => {
@@ -266,6 +311,9 @@
     () => props.goodsInfo,
     (value) => {
       init(value);
+      if (showAxis) {
+        defaultSkuLens.axis = 0;
+      }
     }, {
       immediate: false, // 立即执行
       deep: true, // 深度监听
@@ -290,15 +338,6 @@
       width: 356rpx;
       height: 80rpx;
       border-radius: 0 40rpx 40rpx 0;
-      background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
-      color: #fff;
-    }
-
-    .score-btn {
-      width: 100%;
-      margin: 0 20rpx;
-      height: 80rpx;
-      border-radius: 40rpx;
       background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
       color: #fff;
     }
@@ -334,45 +373,10 @@
         height: 160rpx;
       }
 
-      .close-icon {
-        position: absolute;
-        top: 10rpx;
-        right: 20rpx;
-        font-size: 46rpx;
-        opacity: 0.2;
-      }
-
       .goods-title {
         font-size: 28rpx;
         font-weight: 500;
         line-height: 42rpx;
-      }
-
-      .score-img {
-        width: 36rpx;
-        height: 36rpx;
-        margin: 0 4rpx;
-      }
-
-      .score-text {
-        font-size: 30rpx;
-        font-weight: 500;
-        color: $red;
-        font-family: OPPOSANS;
-      }
-
-      .price-text {
-        font-size: 30rpx;
-        font-weight: 500;
-        color: $red;
-        font-family: OPPOSANS;
-
-        &::before {
-          content: '￥';
-          font-size: 30rpx;
-          font-weight: 500;
-          color: $red;
-        }
       }
 
       .stock-text {
@@ -403,28 +407,39 @@
           text-align: center;
         }
 
-        .label-text {
-          font-size: 26rpx;
-          font-weight: 500;
-        }
-
-        .buy-num-box {
-          height: 100rpx;
-        }
-
         .spec-btn {
-          height: 60rpx;
-          min-width: 100rpx;
-          padding: 0 30rpx;
+          height: 30px;
+          min-width: 80rpx;
           background: #f4f4f4;
           border-radius: 30rpx;
           color: #434343;
-          font-size: 26rpx;
+          font-size: 12px;
+          padding: 0 6px;
+        }
+
+        .del-btn-item {
+          display: flex;
+          justify-content: right;
+          align-items: center;
+        }
+
+        .num-input {
+          height: 30px;
+          border-radius: 30rpx;
+          background: #f4f4f4;
+          font-size: 12px !important;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-width: 80rpx;
+          margin: 0 2.5px;
         }
 
         .sku-item {
+          font-size: 12px;
 
           .remove-btn {
+            margin-left: 10px;
             border-radius: 40rpx;
             background-color: var(--ui-BG-Main-light);
             color: var(--ui-BG-Main);

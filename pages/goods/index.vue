@@ -132,6 +132,7 @@
   import detailContentCard from './components/detail/detail-content-card.vue';
   import detailActivityTip from './components/detail/detail-activity-tip.vue';
   import {
+    cloneDeep,
     isEmpty,
   } from 'lodash';
   import SpuApi from '@/sheep/api/product/spu';
@@ -161,7 +162,6 @@
   // 添加购物车
   function onAddCart(e) {
     if (e instanceof Array) {
-      console.log(e)
       sheep.$store('cart').add(...e);
     } else {
       if (!e.id) {
@@ -174,21 +174,32 @@
 
   // 立即购买
   function onBuy(e) {
-    let data = {};
+    let data = { items: [] };
     if (e instanceof Array) {
-      data.items = e.map(item => (
-          {
+      e.map(item => {
+        let value = data.items.find((exists) => exists.skuId === item.id);
+        if (!value) {
+          value = {
             skuId: item.id,
             count: item.goods_num,
             categoryId: item.categoryId,
-            orderLensList: {
-              sph: item.sph,
-              cyl: item.cyl,
-              add: item.add,
-            },
-          }
-        ),
-      );
+            orderLensList: [],
+          };
+          data.items.push(value);
+        } else {
+          value.count += item.goods_num;
+        }
+        if (item.hasOwnProperty('sph')) {
+          value.orderLensList.push({
+            sph: item.sph,
+            cyl: item.cyl,
+            add: item.add,
+            leftOrRight: item.leftOrRight,
+            axis: item.axis,
+            count: item.goods_num,
+          });
+        }
+      });
       data.deliveryType = 1;
       data.pointStatus = false;
     } else {
@@ -256,12 +267,12 @@
 
   async function getCoupon() {
     // 查询商品券
-    const { code, data, } = await CouponApi.getCouponTemplateList(state.goodsId, 2, 10);
+    const { code, data } = await CouponApi.getCouponTemplateList(state.goodsId, 2, 10);
     if (code === 0) {
       state.couponInfo.push(data);
     }
     // 查询品类券
-    const { code1, data1, } = await CouponApi.getCouponTemplateList(state.goodsId, 3, 10);
+    const { code1, data1 } = await CouponApi.getCouponTemplateList(state.goodsId, 3, 10);
     if (code1 === 0) {
       state.couponInfo.push(data1);
     }

@@ -44,6 +44,8 @@ const cart = defineStore({
             sph: item.sph,
             cyl: item.cyl,
             add: item.add,
+            leftOrRight: item.leftOrRight,
+            axis: item.axis,
           };
         }
         data.push(value);

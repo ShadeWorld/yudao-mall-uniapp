@@ -32,7 +32,7 @@
                           :skuText="cartItemContext(item)"
                           priceColor="#FF3000" :titleWidth="400">
               <template v-if="!state.editMode" v-slot:tool>
-                <su-number-box :min="0" :max="item.sku.stock" :step="1" v-model="item.count"
+                <su-number-box :min="0" :step="1" v-model="item.count"
                                @change="onNumberChange($event, item)" />
               </template>
             </s-goods-item>
@@ -90,7 +90,14 @@
 
   function cartItemContext(item) {
     if (item.cartLens) {
-      return '球镜:' + item.cartLens.sph.toFixed(2) + ' 柱镜:' + item.cartLens.cyl.toFixed(2) + ' 加光:' + item.cartLens.add.toFixed(2);
+      let content = '球镜:' + item.cartLens.sph.toFixed(2) + ' 柱镜:' + item.cartLens.cyl.toFixed(2) + ' 加光:' + item.cartLens.add.toFixed(2);
+      if (item.cartLens.leftOrRight) {
+        content += ` ${item.cartLens.leftOrRight === 1 ? '左眼' : '右眼'}`
+      }
+      if (item.cartLens.axis) {
+        content += ` 轴位: ${item.cartLens.axis}`
+      }
+      return content;
     } else {
       return item.sku.properties.length > 1 ? item.sku.properties.reduce((items2, items) => items2.valueName + ' ' + items.valueName) : item.sku.properties[0].valueName;
     }

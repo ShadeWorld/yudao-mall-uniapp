@@ -8,22 +8,22 @@
       default: [],
     },
     selected: {
-      type: Number,
+      type: String,
       default: undefined,
     },
     show: {
       type: Boolean,
       default: false,
     },
+    placeholder: {
+      type: String,
+      default: "暂无可选项"
+    }
   });
 
   const selectDegree = (degree) => {
-    emits('onSelect', degree);
+    emits('onSelect', degree.value);
     emits('close');
-  };
-
-  const formatDegree = (degree) => {
-    return degree.toFixed(2);
   };
 </script>
 
@@ -37,10 +37,10 @@
         <scroll-view scroll-y="true" class="modal-content-scroll" @touchmove.stop>
           <view class="ss-flex ss-col-center ss-flex-wrap">
             <button class="ss-reset-button spec-btn" @tap="selectDegree(degree)" v-for="degree in degrees"
-                    :key="degree">
-              {{ formatDegree(degree) }}
+                    :key="degree.value">
+              {{ degree.name }}
             </button>
-            <view class="default-text" v-if="degrees.length === 0">暂无可选度数</view>
+            <view class="default-text" v-if="degrees.length === 0">{{ props.placeholder }}</view>
           </view>
         </scroll-view>
       </view>

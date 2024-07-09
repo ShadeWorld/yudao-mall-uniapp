@@ -133,7 +133,7 @@
       @close="state.showCoupon = false"
     />
 
-    <!-- 选择优惠券弹框 -->
+    <!-- 选择配送方式弹窗 -->
     <s-delivery-select
       v-model="state.deliveryTemplateInfo"
       :show="state.showDeliveryTemplate"
