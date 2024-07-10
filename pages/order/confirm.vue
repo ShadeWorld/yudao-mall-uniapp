@@ -11,16 +11,32 @@
 
     <!-- 商品信息 -->
     <view class="order-card-box ss-m-b-14">
-      <s-goods-item
-        v-for="item in state.orderInfo.items"
-        :key="item.skuId"
-        :img="item.picUrl"
-        :title="item.spuName"
-        :skuText="skuTextContent(item)"
-        :price="item.price"
-        :num="item.count"
-        marginBottom="10"
-      />
+
+      <template v-for="item in state.orderInfo.items">
+        <template v-if="item.orderLensList">
+          <s-goods-item
+            v-for="lensItem in item.orderLensList"
+            :key="item.skuId"
+            :img="item.picUrl"
+            :title="item.spuName"
+            :skuText="skuTextContent(lensItem)"
+            :price="item.price"
+            :num="lensItem.count"
+            marginBottom="10"
+          />
+        </template>
+        <template v-else>
+          <s-goods-item
+            :key="item.skuId"
+            :img="item.picUrl"
+            :title="item.spuName"
+            :skuText="skuTextContent(item)"
+            :price="item.price"
+            :num="item.count"
+            marginBottom="10"
+          />
+        </template>
+      </template>
       <view class="order-item ss-flex ss-col-center ss-row-between ss-p-x-20 bg-white ss-r-10">
         <view class="item-title">订单备注</view>
         <view class="ss-flex ss-col-center">
@@ -121,7 +137,7 @@
           共{{ state.orderInfo.items.reduce((acc, item) => acc + item.count, 0) }}件
         </view>
         <view>合计：</view>
-        <view class="total-num text-red"> ￥{{ fen2yuan(state.orderInfo.price.payPrice) }} </view>
+        <view class="total-num text-red"> ￥{{ fen2yuan(state.orderInfo.price.payPrice) }}</view>
       </view>
     </view>
 
@@ -177,6 +193,8 @@
   import CouponApi from '@/sheep/api/promotion/coupon';
   import { fen2yuan } from '@/sheep/hooks/useGoods';
   import SDeliverySelect from '@/sheep/components/s-delivery-select/s-delivery-select.vue';
+  import SLayout from '@/sheep/components/s-layout/s-layout.vue';
+  import SGoodsItem from '@/sheep/components/s-goods-item/s-goods-item.vue';
 
   const state = reactive({
     orderPayload: {},
@@ -193,14 +211,17 @@
   });
 
   function skuTextContent(item) {
-    if (item.orderLensList) {
-      let content = '';
-      item.orderLensList.forEach((lens) => {
-        content += '球镜:' + lens.sph.toFixed(2) + ' 柱镜:' + lens.cyl.toFixed(2) + ' 加光:' + lens.add.toFixed(2)
-      })
+    if (item.hasOwnProperty('sph')) {
+      let content = '球镜:' + item.sph.toFixed(2) + ' 柱镜:' + item.cyl.toFixed(2) + ' 加光:' + item.add.toFixed(2);
+      if (item.leftOrRight) {
+        content += ` ${item.leftOrRight === 1 ? '左眼' : '右眼'}`
+      }
+      if (item.hasOwnProperty('axis') && Number.isFinite(item.axis)) {
+        content += ` 轴位: ${item.axis}`
+      }
       return content;
     } else {
-      return item.properties.map((property) => property.valueName).join(' ')
+      return item.properties.map((property) => property.valueName).join(' ');
     }
   }
 
@@ -249,7 +270,7 @@
       items: state.orderPayload.items,
       couponId: state.orderPayload.couponId,
       addressId: state.addressInfo.id,
-      deliveryTemplateId: state.orderInfo.deliveryTemplateId
+      deliveryTemplateId: state.orderInfo.deliveryTemplateId,
     });
     if (code !== 0) {
       return;
@@ -275,7 +296,7 @@
       pointStatus: false, // TODO 芋艿：需要支持【积分选择】
       combinationActivityId: state.orderPayload.combinationActivityId,
       combinationHeadId: state.orderPayload.combinationHeadId,
-      seckillActivityId: state.orderPayload.seckillActivityId
+      seckillActivityId: state.orderPayload.seckillActivityId,
     });
     if (code !== 0) {
       return;

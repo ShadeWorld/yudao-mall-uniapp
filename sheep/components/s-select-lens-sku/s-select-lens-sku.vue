@@ -304,6 +304,9 @@
         categoryId: goodsInfo.categoryId,
       };
     }
+    if (showAxis.value) {
+      defaultSkuLens.axis = 0;
+    }
     state.lensList.push(JSON.parse(JSON.stringify(defaultSkuLens)));
   };
 
@@ -311,9 +314,6 @@
     () => props.goodsInfo,
     (value) => {
       init(value);
-      if (showAxis) {
-        defaultSkuLens.axis = 0;
-      }
     }, {
       immediate: false, // 立即执行
       deep: true, // 深度监听

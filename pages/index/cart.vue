@@ -94,7 +94,7 @@
       if (item.cartLens.leftOrRight) {
         content += ` ${item.cartLens.leftOrRight === 1 ? '左眼' : '右眼'}`
       }
-      if (item.cartLens.axis) {
+      if (item.cartLens.hasOwnProperty('axis') && Number.isFinite(item.cartLens.axis)) {
         content += ` 轴位: ${item.cartLens.axis}`
       }
       return content;
@@ -119,7 +119,7 @@
     let goods_list = [];
     state.selectedList = state.list.filter((item) => state.selectedIds.includes(item.id));
     state.selectedList.map((item) => {
-      let value = items.find((exists) => exists.skuId === item.skuId);
+      let value = items.find((exists) => exists.skuId === item.sku.id);
       if (!value) {
         value = {
           skuId: item.sku.id,
@@ -128,6 +128,8 @@
           categoryId: item.spu.categoryId,
           orderLensList: []
         }
+        // 此处前端做出修改
+        items.push(value);
       } else {
         value.count += item.count
       }
@@ -136,8 +138,6 @@
         orderLens.count = item.count;
         value.orderLensList.push(orderLens);
       }
-      // 此处前端做出修改
-      items.push(value);
       goods_list.push({
         // goods_id: item.goods_id,
         goods_id: item.spu.id,
@@ -152,6 +152,7 @@
       sheep.$helper.toast('请选择商品');
       return;
     }
+    debugger;
     sheep.$router.go('/pages/order/confirm', {
       data: JSON.stringify({
         // order_type: 'goods',

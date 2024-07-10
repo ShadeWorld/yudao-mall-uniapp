@@ -14,7 +14,7 @@
             {{ formatOrderStatus(order) }}
           </view>
 				</view>
-				<view class="border-bottom" v-for="item in order.items" :key="item.id">
+				<view class="border-bottom" v-for="item in order.items.slice(0, 2)" :key="item.id">
 					<s-goods-item
             :img="item.picUrl"
             :title="item.spuName"
@@ -129,11 +129,7 @@
   // 商品属性文案
   function skuTextContent(item) {
     if (item.orderLensList) {
-      let content = '';
-      item.orderLensList.forEach((lens) => {
-        content += '球镜:' + lens.sph.toFixed(2) + ' 柱镜:' + lens.cyl.toFixed(2) + ' 加光:' + lens.add.toFixed(2)
-      })
-      return content;
+      return '';
     } else {
       return item.properties.map((property) => property.valueName).join(' ')
     }

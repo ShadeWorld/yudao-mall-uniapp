@@ -46,8 +46,9 @@
         <view class="ss-font-30">{{ formatOrderStatus(state.orderInfo) }}</view>
       </view>
       <view class="ss-font-26 ss-m-x-20 ss-m-b-70">{{
-        formatOrderStatusDescription(state.orderInfo)
-      }}</view>
+          formatOrderStatusDescription(state.orderInfo)
+        }}
+      </view>
     </view>
 
     <!-- 收货地址 -->
@@ -60,69 +61,6 @@
       </view>
       <view class="address-detail">
         {{ state.orderInfo.receiverAreaName }} {{ state.orderInfo.receiverDetailAddress }}
-      </view>
-    </view>
-
-    <view
-      class="detail-goods"
-      :style="[{ marginTop: state.orderInfo.receiverAreaId > 0 ? '0' : '-40rpx' }]"
-    >
-      <!-- 订单信 -->
-      <view class="order-list" v-for="item in state.orderInfo.items" :key="item.goods_id">
-        <view class="order-card">
-          <s-goods-item
-            @tap="onGoodsDetail(item.skuId)"
-            :img="item.picUrl"
-            :title="item.spuName"
-            :skuText="skuTextContent(item)"
-            :price="item.price"
-            :num="item.count"
-          >
-            <template #tool>
-              <view class="ss-flex">
-                <button
-                  class="ss-reset-button apply-btn"
-                  v-if="[10, 20, 30].includes(state.orderInfo.status) && item.afterSaleStatus === 0"
-                  @tap.stop="
-                    sheep.$router.go('/pages/order/aftersale/apply', {
-                      orderId: state.orderInfo.id,
-                      itemId: item.id,
-                    })
-                  "
-                >
-                  申请售后
-                </button>
-                <button
-                  class="ss-reset-button apply-btn"
-                  v-if="item.afterSaleStatus === 10"
-                  @tap.stop="
-                    sheep.$router.go('/pages/order/aftersale/detail', {
-                      id: item.afterSaleId,
-                    })
-                  "
-                >
-                  退款中
-                </button>
-                <button
-                  class="ss-reset-button apply-btn"
-                  v-if="item.afterSaleStatus === 20"
-                  @tap.stop="
-                    sheep.$router.go('/pages/order/aftersale/detail', {
-                      id: item.afterSaleId,
-                    })
-                  "
-                >
-                  退款成功
-                </button>
-              </view>
-            </template>
-            <template #priceSuffix>
-              <button class="ss-reset-button tag-btn" v-if="item.status_text">
-                {{ item.status_text }}
-              </button>
-            </template>
-          </s-goods-item>
-        </view>
       </view>
     </view>
 
@@ -193,6 +131,43 @@
       </view>
     </view>
 
+    <!-- 商品列表 -->
+    <view
+      class="detail-goods"
+      :style="[{ marginTop: state.orderInfo.receiverAreaId > 0 ? '0' : '-40rpx' }]"
+    >
+      <!-- 订单信息 -->
+      <template v-for="item in state.orderInfo.items">
+        <template v-if="item.orderLensList">
+          <view class="order-list" v-for="lensItem in item.orderLensList" :key="lensItem.id">
+            <view class="order-card">
+              <s-goods-item
+                @tap="onGoodsDetail(item.skuId)"
+                :img="item.picUrl"
+                :title="item.spuName"
+                :skuText="skuTextContent(lensItem)"
+                :price="item.price"
+                :num="lensItem.count"
+              />
+            </view>
+          </view>
+        </template>
+        <view class="order-list" v-else>
+          <view class="order-card">
+            <s-goods-item
+              @tap="onGoodsDetail(item.skuId)"
+              :img="item.picUrl"
+              :title="item.spuName"
+              :skuText="skuTextContent(item)"
+              :price="item.price"
+              :num="item.count"
+            >
+            </s-goods-item>
+          </view>
+        </view>
+      </template>
+    </view>
+
     <!-- 底部按钮 -->
     <!-- TODO: 查看物流、等待成团、评价完后返回页面没刷新页面 -->
     <su-fixed bottom placeholder bg="bg-white" v-if="state.orderInfo.buttons?.length">
@@ -261,6 +236,7 @@
     handleOrderButtons,
   } from '@/sheep/hooks/useGoods';
   import OrderApi from '@/sheep/api/trade/order';
+  import SLayout from '@/sheep/components/s-layout/s-layout.vue';
 
   const statusBarHeight = sheep.$platform.device.statusBarHeight * 2;
   const headerBg = sheep.$url.css('/static/img/shop/order/order_bg.png');
@@ -285,14 +261,17 @@
 
   // 商品属性文案
   function skuTextContent(item) {
-    if (item.orderLensList) {
-      let content = '';
-      item.orderLensList.forEach((lens) => {
-        content += '球镜:' + lens.sph.toFixed(2) + ' 柱镜:' + lens.cyl.toFixed(2) + ' 加光:' + lens.add.toFixed(2)
-      })
+    if (item.hasOwnProperty('sph')) {
+      let content = '球镜:' + item.sph.toFixed(2) + ' 柱镜:' + item.cyl.toFixed(2) + ' 加光:' + item.add.toFixed(2);
+      if (item.leftOrRight) {
+        content += ` ${item.leftOrRight === 1 ? '左眼' : '右眼'}`
+      }
+      if (item.hasOwnProperty('axis') && Number.isFinite(item.axis)) {
+        content += ` 轴位: ${item.axis}`
+      }
       return content;
     } else {
-      return item.properties.map((property) => property.valueName).join(' ')
+      return item.properties.map((property) => property.valueName).join(' ');
     }
   }
 
@@ -308,7 +287,7 @@
     uni.showModal({
       title: '提示',
       content: '确定要取消订单吗?',
-      success: async function (res) {
+      success: async function(res) {
         if (!res.confirm) {
           return;
         }
@@ -380,12 +359,13 @@
       },
     });
   }
+
   // #endif
 
   // 评价
   function onComment(id) {
     sheep.$router.go('/pages/goods/comment/add', {
-      id
+      id,
     });
   }
 
@@ -443,7 +423,7 @@
     color: rgba(#fff, 0.9);
     width: 100%;
     background: v-bind(headerBg) no-repeat,
-      linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
+    linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
     background-size: 750rpx 100%;
     box-sizing: border-box;
 
