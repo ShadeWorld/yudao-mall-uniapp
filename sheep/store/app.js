@@ -61,11 +61,11 @@ const app = defineStore({
       // TODO 芋艿：未来支持管理后台可配；对应 https://api.shopro.sheepjs.com/shop/api/init
       if (true) {
         this.info = {
-          name: '芋道商城',
-          logo: 'https://static.iocoder.cn/ruoyi-vue-pro-logo.png',
-          version: '1.1.13',
-          copyright: '全部开源，个人与企业可 100% 免费使用',
-          copytime: 'Copyright© 2018-2024',
+          name: '昭明眼镜下单平台',
+          logo: 'https://www.zhaomingyanjing.store/glass-manage/e46ed91aade0246463aae0e63e0126bbd275a22b26a0d4c3beff21cafe60709f.png',
+          version: '1.0.0',
+          copyright: '丹阳市开发区锦尚光学眼镜商行 保留所有权利',
+          copytime: 'Copyright© 2024',
 
           cdnurl: 'https://file.sheepjs.com', // 云存储域名
           filesystem: 'qcloud', // 云存储平台

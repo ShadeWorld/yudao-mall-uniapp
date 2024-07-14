@@ -36,37 +36,37 @@
   const list = [
     {
       url: '/pages/index/index',
-      icon: '/static/img/shop/tools/home.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/f4e03230b5cb9b2bf789b67df43125af1b3cef9c2abf4d8bca8f6fa5ded16a20.png',
       title: '首页',
     },
     {
       url: '/pages/index/search',
-      icon: '/static/img/shop/tools/search.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/96a288f2a0043c8defaa37e922828b3092ba785e1c191bf18f20dbd462261f7a.png',
       title: '搜索',
     },
     {
       url: '/pages/index/user',
-      icon: '/static/img/shop/tools/user.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/227699332b8ae736e220852e60215072eb2805478dab4909e085f89aeb3604cf.png',
       title: '个人中心',
     },
     {
       url: '/pages/index/cart',
-      icon: '/static/img/shop/tools/cart.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/a45981116198a65db5f28ffd070f0078cfa66ac932a0136bf45ba7e8f401a1d0.png',
       title: '购物车',
     },
     {
       url: '/pages/user/goods-log',
-      icon: '/static/img/shop/tools/browse.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/7e5ecfb841f2d89b778e1070ef867c17ccda48a5fea14a149f8eb1ce6aa26a87.png',
       title: '浏览记录',
     },
     {
       url: '/pages/user/goods-collect',
-      icon: '/static/img/shop/tools/collect.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/9f83f4dc3cbf8b1e8e747f8dd79a260feaf65fa9ef3f2e2224015779f85119a1.png',
       title: '我的收藏',
     },
     {
       url: '/pages/chat/index',
-      icon: '/static/img/shop/tools/service.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/739f3165045b1552b71176297dab45eda2e192b976e25b1a458a8781a61b7557.png',
       title: '客服',
     },
   ];

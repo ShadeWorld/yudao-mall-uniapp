@@ -52,14 +52,14 @@
       type: 'nocomment',
       count: 'uncommentedCount',
     },
-    {
-      title: '售后单',
-      value: '0',
-      icon: 'https://www.zhaomingyanjing.store/glass-manage/096208fe06bc0a19b26fd7e78849f3af215531de58df4ed0d41e844e07f7df66.png',
-      path: '/pages/order/aftersale/list',
-      type: 'aftersale',
-      count: 'afterSaleCount',
-    },
+    // {
+    //   title: '售后单',
+    //   value: '0',
+    //   icon: 'https://www.zhaomingyanjing.store/glass-manage/096208fe06bc0a19b26fd7e78849f3af215531de58df4ed0d41e844e07f7df66.png',
+    //   path: '/pages/order/aftersale/list',
+    //   type: 'aftersale',
+    //   count: 'afterSaleCount',
+    // },
     {
       title: '全部订单',
       value: '0',
