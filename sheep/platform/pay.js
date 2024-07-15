@@ -10,7 +10,7 @@ import PayOrderApi from '@/sheep/api/pay/order';
  *
  * @param {String} payment = ['wechat','alipay','wallet','mock']  	- 支付方式
  * @param {String} orderType = ['goods','recharge','groupon']  	- 订单类型
- * @param {String} id					- 订单号
+ * @param {String} id          - 订单号
  */
 
 export default class SheepPay {
@@ -35,7 +35,7 @@ export default class SheepPay {
         },
         mock: () => {
           this.mockPay();
-        }
+        },
       },
       WechatMiniProgram: {
         wechat: () => {
@@ -49,7 +49,7 @@ export default class SheepPay {
         },
         mock: () => {
           this.mockPay();
-        }
+        },
       },
       App: {
         wechat: () => {
@@ -63,7 +63,7 @@ export default class SheepPay {
         },
         mock: () => {
           this.mockPay();
-        }
+        },
       },
       H5: {
         wechat: () => {
@@ -77,7 +77,7 @@ export default class SheepPay {
         },
         mock: () => {
           this.mockPay();
-        }
+        },
       },
     };
     return payAction[sheep.$platform.name][this.payment]();
@@ -89,7 +89,7 @@ export default class SheepPay {
       let data = {
         id: this.id,
         channelCode: channel,
-        channelExtras: {}
+        channelExtras: {},
       };
       // 特殊逻辑：微信公众号、小程序支付时，必须传入 openid
       if (['wx_pub', 'wx_lite'].includes(channel)) {
@@ -116,6 +116,7 @@ export default class SheepPay {
       });
     });
   }
+
   // #ifdef H5
   // 微信公众号 JSSDK 支付
   async wechatOfficialAccountPay() {
@@ -134,7 +135,7 @@ export default class SheepPay {
       fail: (error) => {
         if (error.errMsg.indexOf('chooseWXPay:没有此SDK或暂不支持此SDK模拟') >= 0) {
           sheep.$helper.toast('发起微信支付失败，原因：可能是微信开发者工具不支持，建议使用微信打开网页后支付');
-          return
+          return;
         }
         this.payResult('fail');
       },
@@ -161,11 +162,11 @@ export default class SheepPay {
 
     // 展示对应的界面
     if (data.displayMode === 'url') {
-      location.href = data.displayContent
+      location.href = data.displayContent;
     } else if (data.displayMode === 'qr_code') {
-      displayQrCode(channelCode, data)
+      displayQrCode(channelCode, data);
     } else if (data.displayMode === 'app') {
-      displayApp(channelCode)
+      displayApp(channelCode);
     }
   }
 
@@ -276,7 +277,7 @@ export default class SheepPay {
     sheep.$router.redirect('/pages/pay/result', {
       id: this.id,
       orderType: this.orderType,
-      payState: resultType
+      payState: resultType,
     });
   }
 
@@ -285,7 +286,7 @@ export default class SheepPay {
     uni.showModal({
       title: '微信支付',
       content: '请先绑定微信再使用微信支付',
-      success: function (res) {
+      success: function(res) {
         if (res.confirm) {
           sheep.$platform.useProvider('wechat').bind();
         }
@@ -296,67 +297,39 @@ export default class SheepPay {
 }
 
 export function getPayMethods(channels) {
-  const payMethods = [
-    {
-      icon: '/static/img/shop/pay/wechat.png',
-      title: '微信支付',
-      value: 'wechat',
-      disabled: true,
-    },
-    // {
-    //   icon: '/static/img/shop/pay/alipay.png',
-    //   title: '支付宝支付',
-    //   value: 'alipay',
-    //   disabled: true,
-    // },
-    {
-      icon: '/static/img/shop/pay/wallet.png',
-      title: '余额支付',
-      value: 'wallet',
-      disabled: true,
-    },
-    // {
-    //   icon: '/static/img/shop/pay/apple.png',
-    //   title: 'Apple Pay',
-    //   value: 'apple',
-    //   disabled: true,
-    // },
-    // {
-    //   icon: '/static/img/shop/pay/wallet.png',
-    //   title: '模拟支付',
-    //   value: 'mock',
-    //   disabled: true,
-    // }
-  ];
-  const platform = sheep.$platform.name
+  const payMethods = [];
+  const platform = sheep.$platform.name;
 
   // 1. 处理【微信支付】
-  const wechatMethod = payMethods[0];
   if ((platform === 'WechatOfficialAccount' && channels.includes('wx_pub'))
     || (platform === 'WechatMiniProgram' && channels.includes('wx_lite'))
     || (platform === 'App' && channels.includes('wx_app'))) {
-    wechatMethod.disabled = false;
+    payMethods.push({
+      icon: '/static/img/shop/pay/wechat.png',
+      title: '微信支付',
+      value: 'wechat',
+      disabled: false,
+    });
   }
-  wechatMethod.disabled = false; // TODO 芋艿：临时测试
 
-  // 2. 处理【支付宝支付】
-  // const alipayMethod = payMethods[1];
-  // if ((platform === 'WechatOfficialAccount' && channels.includes('alipay_wap'))
-  //   || (platform === 'WechatMiniProgram' && channels.includes('alipay_wap'))
-  //   || (platform === 'App' && channels.includes('alipay_app'))
-  //   || (platform === 'H5' && channels.includes('alipay_wap'))) {
-  //   alipayMethod.disabled = false;
-  // }
-  // 3. 处理【余额支付】
-  const walletMethod = payMethods[2];
+  // 2. 处理【余额支付】
   if (channels.includes('wallet')) {
-    walletMethod.disabled = false;
+    payMethods.push({
+      icon: '/static/img/shop/pay/wallet.png',
+      title: '余额支付',
+      value: 'wallet',
+      disabled: false,
+    });
   }
-  // 4. 处理【苹果支付】TODO 芋艿：未来接入
-  // 5. 处理【模拟支付】
-  // const mockMethod = payMethods[4];
+
+  // 3. 处理【模拟支付】
   // if (channels.includes('mock')) {
-  //   mockMethod.disabled = false;
+  //   payMethods.push({
+  //     icon: '/static/img/shop/pay/wallet.png',
+  //     title: '模拟支付',
+  //     value: 'mock',
+  //     disabled: false,
+  //   });
   // }
   return payMethods;
 }
