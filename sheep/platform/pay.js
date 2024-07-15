@@ -305,7 +305,7 @@ export function getPayMethods(channels) {
     || (platform === 'WechatMiniProgram' && channels.includes('wx_lite'))
     || (platform === 'App' && channels.includes('wx_app'))) {
     payMethods.push({
-      icon: '/static/img/shop/pay/wechat.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/952fe9bc71d381eb43b04a93cd3483663d8fe1ff5868fb510a5e4e14662f5cfe.png',
       title: '微信支付',
       value: 'wechat',
       disabled: false,
@@ -315,7 +315,7 @@ export function getPayMethods(channels) {
   // 2. 处理【余额支付】
   if (channels.includes('wallet')) {
     payMethods.push({
-      icon: '/static/img/shop/pay/wallet.png',
+      icon: 'https://www.zhaomingyanjing.store/glass-manage/21f53706da45a9e6cc2d21e50aec9f426321555c473615ecc9c393d84285a713.png',
       title: '余额支付',
       value: 'wallet',
       disabled: false,

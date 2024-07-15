@@ -42,15 +42,15 @@
 </template>
 
 <script setup>
-	import { computed, reactive } from 'vue';
-	import sheep from '@/sheep';
-	import { onLoad } from '@dcloudio/uni-app';
+  import { computed, reactive } from 'vue';
+  import sheep from '@/sheep';
+  import { onLoad } from '@dcloudio/uni-app';
   import { fen2yuan } from '@/sheep/hooks/useGoods';
   import PayWalletApi from '@/sheep/api/pay/wallet';
 
-	const userWallet = computed(() => sheep.$store('user').userWallet);
+  const userWallet = computed(() => sheep.$store('user').userWallet);
 	const statusBarHeight = sheep.$platform.device.statusBarHeight * 2;
-	const headerBg = sheep.$url.css('/static/img/shop/user/withdraw_bg.png');
+	const headerBg = sheep.$url.css('https://www.zhaomingyanjing.store/glass-manage/c9aeef7e970b76991668740263d518f25ce737b1552db9ee7b22d8572a4a5110.png');
 
 	const state = reactive({
 		recharge_money: '', // 输入的充值金额

@@ -115,9 +115,9 @@
           </view>
         </view>
 
-        <view class="ss-m-t-16 ss-flex ss-col-center ss-flex-wrap">
-          <view class="sales-text">{{ salesAndStock }}</view>
-        </view>
+<!--        <view class="ss-m-t-16 ss-flex ss-col-center ss-flex-wrap">-->
+<!--          <view class="sales-text">{{ salesAndStock }}</view>-->
+<!--        </view>-->
       </view>
 
       <slot name="cart">
@@ -185,9 +185,9 @@
               <view class="ss-m-l-8">{{ fen2yuan(data.marketPrice) }}</view>
             </view>
           </view>
-          <view class="ss-m-t-8 ss-flex ss-col-center ss-flex-wrap">
-            <view class="sales-text">{{ salesAndStock }}</view>
-          </view>
+<!--          <view class="ss-m-t-8 ss-flex ss-col-center ss-flex-wrap">-->
+<!--            <view class="sales-text">{{ salesAndStock }}</view>-->
+<!--          </view>-->
         </view>
       </view>
 
@@ -249,9 +249,9 @@
               <view class="ss-m-l-8">{{ fen2yuan(data.marketPrice) }}</view>
             </view>
           </view>
-          <view class="ss-m-t-16 ss-flex ss-flex-wrap">
-            <view class="sales-text">{{ salesAndStock }}</view>
-          </view>
+<!--          <view class="ss-m-t-16 ss-flex ss-flex-wrap">-->
+<!--            <view class="sales-text">{{ salesAndStock }}</view>-->
+<!--          </view>-->
         </view>
       </view>
 
@@ -267,35 +267,33 @@
    * 商品卡片
    *
    * @property {Array} size = [xs | sm | md | lg | sl ] 			 	- 列表数据
-   * @property {String} tag 											- md及以上才有
-   * @property {String} img 											- 图片
-   * @property {String} background 									- 背景色
-   * @property {String} topRadius 									- 上圆角
-   * @property {String} bottomRadius 									- 下圆角
-   * @property {String} title 										- 标题
-   * @property {String} titleColor 									- 标题颜色
+   * @property {String} tag                      - md及以上才有
+   * @property {String} img                      - 图片
+   * @property {String} background                  - 背景色
+   * @property {String} topRadius                  - 上圆角
+   * @property {String} bottomRadius                  - 下圆角
+   * @property {String} title                    - 标题
+   * @property {String} titleColor                  - 标题颜色
    * @property {Number} titleWidth = 0								- 标题宽度，默认0，单位rpx
-   * @property {String} subTitle 										- 副标题
-   * @property {String} subTitleColor									- 副标题颜色
-   * @property {String} subTitleBackground 							- 副标题背景
-   * @property {String | Number} price 								- 价格
-   * @property {String} priceColor 									- 价格颜色
-   * @property {String | Number} originPrice 							- 原价/划线价
-   * @property {String} originPriceColor 								- 原价颜色
-   * @property {String | Number} sales 								- 销售数量
-   * @property {String} salesColor									- 销售数量颜色
+   * @property {String} subTitle                    - 副标题
+   * @property {String} subTitleColor                  - 副标题颜色
+   * @property {String} subTitleBackground              - 副标题背景
+   * @property {String | Number} price                - 价格
+   * @property {String} priceColor                  - 价格颜色
+   * @property {String | Number} originPrice              - 原价/划线价
+   * @property {String} originPriceColor                - 原价颜色
+   * @property {String | Number} sales                - 销售数量
+   * @property {String} salesColor                  - 销售数量颜色
    *
    * @slots activity												 	- 活动插槽
    * @slots cart														- 购物车插槽，默认包含文字，背景色，文字颜色 || 图片 || 行为
    *
-   * @event {Function()} click 										- 点击卡片
+   * @event {Function()} click                    - 点击卡片
    *
    */
-  import { computed, reactive, getCurrentInstance, onMounted, nextTick } from 'vue';
+  import { computed, getCurrentInstance, nextTick, onMounted, reactive } from 'vue';
   import sheep from '@/sheep';
-  import { fen2yuan, formatSales } from '@/sheep/hooks/useGoods';
-  import { formatStock } from '@/sheep/hooks/useGoods';
-  import goodsCollectVue from '@/pages/user/goods-collect.vue';
+  import { fen2yuan, formatSales, formatStock } from '@/sheep/hooks/useGoods';
   import { isArray } from 'lodash';
 
   // 数据
