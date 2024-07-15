@@ -303,30 +303,30 @@ export function getPayMethods(channels) {
       value: 'wechat',
       disabled: true,
     },
-    {
-      icon: '/static/img/shop/pay/alipay.png',
-      title: '支付宝支付',
-      value: 'alipay',
-      disabled: true,
-    },
+    // {
+    //   icon: '/static/img/shop/pay/alipay.png',
+    //   title: '支付宝支付',
+    //   value: 'alipay',
+    //   disabled: true,
+    // },
     {
       icon: '/static/img/shop/pay/wallet.png',
       title: '余额支付',
       value: 'wallet',
       disabled: true,
     },
-    {
-      icon: '/static/img/shop/pay/apple.png',
-      title: 'Apple Pay',
-      value: 'apple',
-      disabled: true,
-    },
-    {
-      icon: '/static/img/shop/pay/wallet.png',
-      title: '模拟支付',
-      value: 'mock',
-      disabled: true,
-    }
+    // {
+    //   icon: '/static/img/shop/pay/apple.png',
+    //   title: 'Apple Pay',
+    //   value: 'apple',
+    //   disabled: true,
+    // },
+    // {
+    //   icon: '/static/img/shop/pay/wallet.png',
+    //   title: '模拟支付',
+    //   value: 'mock',
+    //   disabled: true,
+    // }
   ];
   const platform = sheep.$platform.name
 
@@ -340,13 +340,13 @@ export function getPayMethods(channels) {
   wechatMethod.disabled = false; // TODO 芋艿：临时测试
 
   // 2. 处理【支付宝支付】
-  const alipayMethod = payMethods[1];
-  if ((platform === 'WechatOfficialAccount' && channels.includes('alipay_wap'))
-    || (platform === 'WechatMiniProgram' && channels.includes('alipay_wap'))
-    || (platform === 'App' && channels.includes('alipay_app'))
-    || (platform === 'H5' && channels.includes('alipay_wap'))) {
-    alipayMethod.disabled = false;
-  }
+  // const alipayMethod = payMethods[1];
+  // if ((platform === 'WechatOfficialAccount' && channels.includes('alipay_wap'))
+  //   || (platform === 'WechatMiniProgram' && channels.includes('alipay_wap'))
+  //   || (platform === 'App' && channels.includes('alipay_app'))
+  //   || (platform === 'H5' && channels.includes('alipay_wap'))) {
+  //   alipayMethod.disabled = false;
+  // }
   // 3. 处理【余额支付】
   const walletMethod = payMethods[2];
   if (channels.includes('wallet')) {
@@ -354,9 +354,9 @@ export function getPayMethods(channels) {
   }
   // 4. 处理【苹果支付】TODO 芋艿：未来接入
   // 5. 处理【模拟支付】
-  const mockMethod = payMethods[4];
-  if (channels.includes('mock')) {
-    mockMethod.disabled = false;
-  }
+  // const mockMethod = payMethods[4];
+  // if (channels.includes('mock')) {
+  //   mockMethod.disabled = false;
+  // }
   return payMethods;
 }
