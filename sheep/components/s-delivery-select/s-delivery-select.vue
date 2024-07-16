@@ -56,23 +56,25 @@
       >
         <view class="total-card-box ss-p-20 ss-m-b-14 ss-r-10">
           <view class="total-box-content delivery-item">
-            <view v-for="(item, index) in state.deliveryTemplateInfo" :key="index"
-                  class="order-item ss-flex ss-col-center ss-row-between">
-              <view class="item-title">{{ item.name }}</view>
-              <view class="ss-flex ss-col-center">
-                <text class="item-value ss-m-r-24">
-                  ￥{{ fen2yuan(item.price) }}
-                </text>
+            <radio-group>
+              <view v-for="(item, index) in state.deliveryTemplateInfo" :key="index"
+                    class="order-item ss-flex ss-col-center ss-row-between">
+                <view class="item-title">{{ item.name }}</view>
+                <view class="ss-flex ss-col-center">
+                  <text class="item-value ss-m-r-24">
+                    ￥{{ fen2yuan(item.price) }}
+                  </text>
+                </view>
+                <label class="ss-flex ss-col-center" @tap="radioChange(item.id)">
+                  <radio
+                    color="var(--ui-BG-Main)"
+                    style="transform: scale(0.8)"
+                    :checked="state.deliveryTemplateId === item.id || item.selected"
+                    @tap.stop="radioChange(item.id)"
+                  />
+                </label>
               </view>
-              <label class="ss-flex ss-col-center" @tap="radioChange(item.id)">
-                <radio
-                  color="var(--ui-BG-Main)"
-                  style="transform: scale(0.8)"
-                  :checked="state.deliveryTemplateId === item.id || item.selected"
-                  @tap.stop="radioChange(item.id)"
-                />
-              </label>
-            </view>
+            </radio-group>
           </view>
         </view>
       </scroll-view>

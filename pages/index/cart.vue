@@ -152,7 +152,6 @@
       sheep.$helper.toast('请选择商品');
       return;
     }
-    debugger;
     sheep.$router.go('/pages/order/confirm', {
       data: JSON.stringify({
         // order_type: 'goods',

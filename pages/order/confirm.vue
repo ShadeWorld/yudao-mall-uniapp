@@ -289,6 +289,7 @@
   async function getOrderInfo() {
     // 计算价格
     const { data, code } = await OrderApi.settlementOrder({
+      deliveryTemplateId: state.orderPayload.deliveryTemplateId,
       items: state.orderPayload.items,
       couponId: state.orderPayload.couponId,
       addressId: state.addressInfo.id,

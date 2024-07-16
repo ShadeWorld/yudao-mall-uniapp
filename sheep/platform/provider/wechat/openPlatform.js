@@ -14,7 +14,6 @@ const login = () => {
       provider: 'weixin',
       onlyAuthorize: true,
     });
-    debugger
     if (loginRes.errMsg == 'login:ok') {
       const res = await third.wechat.login({
         platform: 'openPlatform',

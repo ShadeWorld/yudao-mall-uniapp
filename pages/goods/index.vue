@@ -309,20 +309,20 @@
     getCoupon();
 
     // 3. 加载营销活动信息
-    ActivityApi.getActivityListBySpuId(state.goodsId).then((res) => {
-      if (res.code !== 0) {
-        return;
-      }
-      res.data.forEach(activity => {
-        if ([1, 2, 3].includes(activity.type)) { // 情况一：拼团/秒杀/砍价
-          state.activityList.push(activity);
-        } else if (activity.type === 5) { // 情况二：满减送
-          state.activityInfo.push(activity);
-        } else { // 情况三：限时折扣 TODO 芋艿
-          console.log('待实现！优先级不高');
-        }
-      });
-    });
+    // ActivityApi.getActivityListBySpuId(state.goodsId).then((res) => {
+    //   if (res.code !== 0) {
+    //     return;
+    //   }
+    //   res.data.forEach(activity => {
+    //     if ([1, 2, 3].includes(activity.type)) { // 情况一：拼团/秒杀/砍价
+    //       state.activityList.push(activity);
+    //     } else if (activity.type === 5) { // 情况二：满减送
+    //       state.activityInfo.push(activity);
+    //     } else { // 情况三：限时折扣 TODO 芋艿
+    //       console.log('待实现！优先级不高');
+    //     }
+    //   });
+    // });
   });
 </script>
 

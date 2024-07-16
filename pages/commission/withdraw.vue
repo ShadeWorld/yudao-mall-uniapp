@@ -186,7 +186,6 @@
   // 提交提现
   const onConfirm = async () => {
     // 参数校验
-    debugger;
     if (
       !state.accountInfo.price ||
       state.accountInfo.price > state.brokerageInfo.price ||

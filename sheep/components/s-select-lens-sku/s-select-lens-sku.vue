@@ -271,35 +271,47 @@
 
   const init = (goodsInfo) => {
     let defaultSku;
+    // 球、柱、下加光都是优先找包含0度的
     let sphFilter = goodsInfo.skus.filter((sku) => between(0, [sku.skuLens.minSph, sku.skuLens.maxSph]));
     if (sphFilter.length > 0) {
       let cylFilter = sphFilter.filter((sku) =>
         between(0, [sku.skuLens.minCyl, sku.skuLens.maxCyl]),
       );
       if (cylFilter.length > 0) {
-        defaultSku = cylFilter.find((sku) =>
+        let addFilter = cylFilter.filter((sku) =>
           between(0, [sku.skuLens.minAdd, sku.skuLens.maxAdd]),
         );
-        defaultSkuLens = {
-          id: defaultSku.id,
-          sph: 0,
-          cyl: 0,
-          add: 0,
-          goods_num: 1,
-          categoryId: goodsInfo.categoryId,
-        };
+        if (addFilter.length > 0) {
+          // 找到三个都包含0度的，直接用
+          defaultSku = addFilter[0];
+          // 设置一下默认光度
+          defaultSkuLens = {
+            id: defaultSku.id,
+            sph: 0,
+            cyl: 0,
+            add: 0,
+            goods_num: 1,
+            categoryId: goodsInfo.categoryId,
+          };
+        } else {
+          // 没有找到add包含0度的，直接用柱镜包含0度中的第一个sku
+          defaultSku = cylFilter[0];
+        }
       } else {
+        // 没有找到柱镜包含0度的，直接用球镜包含0度中的第一个sku
         defaultSku = sphFilter.skus[0];
       }
     } else {
+      // 没有找到球镜包含0度的，直接用第一个sku
       defaultSku = goodsInfo.skus[0];
     }
     if (!defaultSkuLens && defaultSku) {
+      // 如果没有默认光度，就代表没有找到三个都包含0度的，这里默认光度都用默认sku的最小值
       defaultSkuLens = {
         id: defaultSku.id,
-        sph: defaultSku.minSph,
-        cyl: defaultSku.minCyl,
-        add: defaultSku.minAdd,
+        sph: Math.min(defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph),
+        cyl: Math.min(defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl),
+        add: Math.min(defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd),
         goods_num: 1,
         categoryId: goodsInfo.categoryId,
       };

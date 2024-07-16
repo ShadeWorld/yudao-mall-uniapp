@@ -17,8 +17,8 @@
     },
     placeholder: {
       type: String,
-      default: "暂无可选项"
-    }
+      default: '暂无可选项',
+    },
   });
 
   const selectDegree = (degree) => {
@@ -51,7 +51,7 @@
 <style scoped lang="scss">
   .ss-modal-box {
     border-radius: 30rpx 30rpx 0 0;
-    max-height: 1000rpx;
+    max-height: 300rpx;
 
     .modal-content {
       padding: 20rpx 20rpx;
@@ -77,13 +77,13 @@
 
         .spec-btn {
           height: 60rpx;
-          min-width: 100rpx;
+          width: 100rpx;
           padding: 0 30rpx;
           background: #f4f4f4;
           border-radius: 30rpx;
           color: #434343;
           font-size: 26rpx;
-          margin-right: 10rpx;
+          margin-right: 11rpx;
           margin-bottom: 10rpx;
         }
 
