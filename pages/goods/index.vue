@@ -58,8 +58,8 @@
             <detail-cell-sku v-model="state.selectedSku.goods_sku_text" :sku="state.selectedSku"
                              @tap="state.showSelectSku = true" />
             <view style="border-top:1px solid #eee; border-radius: 1px; width: 95%; margin: auto;"></view>
-            <detail-cell-param v-model="state.selectedSku.goods_sku_text"
-                               :properties="state.goodsInfo.properties" @tap="state.showSpuParam = true" />
+<!--            <detail-cell-param v-model="state.selectedSku.goods_sku_text"-->
+<!--                               :properties="state.goodsInfo.properties" @tap="state.showSpuParam = true" />-->
           </view>
 
           <!-- 规格与数量弹框 -->
@@ -74,7 +74,7 @@
         </view>
 
         <!-- 评价 -->
-        <detail-comment-card class="detail-comment-selector" :goodsId="state.goodsId" />
+<!--        <detail-comment-card class="detail-comment-selector" :goodsId="state.goodsId" />-->
         <!-- 详情 -->
         <detail-content-card class="detail-content-selector" :content="state.goodsInfo.description" />
 

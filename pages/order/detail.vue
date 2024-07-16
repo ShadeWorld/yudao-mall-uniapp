@@ -187,17 +187,17 @@
           继续支付
         </button>
         <!-- TODO 芋艿：拼团接入 -->
-        <button
-          class="ss-reset-button cancel-btn"
-          v-if="state.orderInfo.buttons?.includes('combination')"
-          @tap="
-            sheep.$router.go('/pages/activity/groupon/detail', {
-              id: state.orderInfo.ext.groupon_id,
-            })
-          "
-        >
-          拼团详情
-        </button>
+<!--        <button-->
+<!--          class="ss-reset-button cancel-btn"-->
+<!--          v-if="state.orderInfo.buttons?.includes('combination')"-->
+<!--          @tap="-->
+<!--            sheep.$router.go('/pages/activity/groupon/detail', {-->
+<!--              id: state.orderInfo.ext.groupon_id,-->
+<!--            })-->
+<!--          "-->
+<!--        >-->
+<!--          拼团详情-->
+<!--        </button>-->
         <button
           class="ss-reset-button cancel-btn"
           v-if="state.orderInfo.buttons?.includes('express')"
@@ -212,13 +212,13 @@
         >
           确认收货
         </button>
-        <button
-          class="ss-reset-button cancel-btn"
-          v-if="state.orderInfo.buttons?.includes('comment')"
-          @tap="onComment(state.orderInfo.id)"
-        >
-          评价
-        </button>
+<!--        <button-->
+<!--          class="ss-reset-button cancel-btn"-->
+<!--          v-if="state.orderInfo.buttons?.includes('comment')"-->
+<!--          @tap="onComment(state.orderInfo.id)"-->
+<!--        >-->
+<!--          评价-->
+<!--        </button>-->
       </view>
     </su-fixed>
   </s-layout>

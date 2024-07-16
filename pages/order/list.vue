@@ -54,10 +54,10 @@
                     @tap.stop="onCancel(order.id)">
 							取消订单
 						</button>
-						<button v-if="order.buttons.includes('comment')" class="tool-btn ss-reset-button"
-                    @tap.stop="onComment(order.id)">
-							评价
-						</button>
+<!--						<button v-if="order.buttons.includes('comment')" class="tool-btn ss-reset-button"-->
+<!--                    @tap.stop="onComment(order.id)">-->
+<!--							评价-->
+<!--						</button>-->
 						<button v-if="order.buttons.includes('delete')" class="delete-btn ss-reset-button"
                     @tap.stop="onDelete(order.id)">
 							删除订单
@@ -120,10 +120,10 @@
 			name: '待收货',
 			value: 20,
 		},
-		{
-			name: '待评价',
-			value: 30,
-		},
+		// {
+		// 	name: '待评价',
+		// 	value: 30,
+		// },
 	];
 
   // 商品属性文案
