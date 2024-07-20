@@ -1,5 +1,6 @@
 <script setup>
   import sheep from '@/sheep';
+  import SuPopup from '@/sheep/ui/su-popup/su-popup.vue';
 
   const emits = defineEmits(['close', 'onSelect']);
   const props = defineProps({
@@ -44,6 +45,10 @@
           </view>
         </scroll-view>
       </view>
+
+      <!-- 操作区 -->
+      <view class="modal-footer border-top">
+      </view>
     </view>
   </su-popup>
 </template>
@@ -51,13 +56,13 @@
 <style scoped lang="scss">
   .ss-modal-box {
     border-radius: 30rpx 30rpx 0 0;
-    max-height: 300rpx;
+    max-height: 400rpx;
 
     .modal-content {
-      padding: 20rpx 20rpx;
+      padding: 20rpx 40rpx 0 40rpx;
 
       .modal-content-scroll {
-        max-height: 600rpx;
+        max-height: 300rpx;
 
         .default-text {
           width: 100%;

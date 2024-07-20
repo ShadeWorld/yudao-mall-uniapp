@@ -31,7 +31,7 @@
                 <view class="col-item">柱镜</view>
               </uni-col>
               <uni-col :span="3">
-                <view class="col-item">加光</view>
+                <view class="col-item">ADD</view>
               </uni-col>
               <uni-col :span="3"
                        v-if="goodsInfo.lensProperty.distinguishEye">
@@ -137,6 +137,7 @@
   import UniRow from '@/uni_modules/uni-row/components/uni-row/uni-row.vue';
   import SuPopup from '@/sheep/ui/su-popup/su-popup.vue';
   import UniCol from '@/uni_modules/uni-row/components/uni-col/uni-col.vue';
+  import sheep from '@/sheep';
 
   const emits = defineEmits(['addCart', 'buy', 'close']);
   const props = defineProps({
@@ -254,6 +255,7 @@
   };
 
   const addSku = () => {
+    defaultSkuLens.leftOrRight = 3 - defaultSkuLens.leftOrRight;
     state.lensList.push(JSON.parse(JSON.stringify(defaultSkuLens)));
   };
 
@@ -309,15 +311,18 @@
       // 如果没有默认光度，就代表没有找到三个都包含0度的，这里默认光度都用默认sku的最小值
       defaultSkuLens = {
         id: defaultSku.id,
-        sph: Math.min(defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph),
-        cyl: Math.min(defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl),
-        add: Math.min(defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd),
+        sph: between(0, [defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph]) ? 0 : Math.min(defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph),
+        cyl: between(0, [defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl]) ? 0 : Math.min(defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl),
+        add: between(0, [defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd]) ? 0 : Math.min(defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd),
         goods_num: 1,
         categoryId: goodsInfo.categoryId,
       };
     }
     if (showAxis.value) {
       defaultSkuLens.axis = 0;
+    }
+    if (goodsInfo.lensProperty.distinguishEye) {
+      defaultSkuLens.leftOrRight = 1;
     }
     state.lensList.push(JSON.parse(JSON.stringify(defaultSkuLens)));
   };
@@ -370,6 +375,7 @@
   .ss-modal-box {
     border-radius: 30rpx 30rpx 0 0;
     max-height: 1000rpx;
+    min-height: 700rpx;
 
     .modal-header {
       position: relative;
@@ -465,5 +471,10 @@
         }
       }
     }
+  }
+
+  .error-btn {
+    background: var(--ui-BG-Main-light);
+    color: var(--ui-BG-Main);
   }
 </style>
