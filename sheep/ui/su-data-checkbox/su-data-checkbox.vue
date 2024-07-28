@@ -794,7 +794,7 @@
         &.is--tag {
           margin-right: 10px;
           padding: 5px 10px;
-          border: 1px $border-color solid;
+          //border: 1px $border-color solid;
           border-radius: 3px;
           background-color: #f5f5f5;
 

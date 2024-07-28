@@ -110,6 +110,7 @@
 		showFilter: false,
 		iconStatus: false, // true - 单列布局；false - 双列布局
     keyword: '',
+    brandId: undefined,
     categoryId: 0,
 		tabList: [{
 				name: '综合推荐',
@@ -237,6 +238,7 @@
 			sortAsc: state.currentOrder,
 			categoryId: state.categoryId,
 			keyword: state.keyword,
+      brandId: state.brandId
 		});
     if (code !== 0) {
       return;
@@ -259,6 +261,7 @@
 	onLoad((options) => {
 		state.categoryId = options.categoryId;
 		state.keyword = options.keyword;
+    state.brandId = options.brandId;
 		getList(state.currentSort, state.currentOrder);
 	});
 

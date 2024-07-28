@@ -98,6 +98,17 @@
 					}
 				},
 				{
+					"path": "process/index",
+					"style": {
+						"navigationBarTitleText": "来架加工"
+					},
+					"meta": {
+						"sync": true,
+						"title": "来架加工",
+						"group": "商品"
+					}
+				},
+				{
 					"path": "groupon",
 					"style": {
 						"navigationBarTitleText": "拼团商品"
@@ -108,7 +119,6 @@
 						"group": "商品"
 					}
 				},
-
 				{
 					"path": "seckill",
 					"style": {
