@@ -7,24 +7,49 @@
   import UniDataCheckBox from '@/sheep/ui/su-data-checkbox/su-data-checkbox.vue';
   import CraftApi from '@/sheep/api/product/craft';
   import ProcessCartList from '@/pages/goods/process/components/process-cart-list.vue';
+  import ProcessLensParam from '@/pages/goods/process/components/process-lens-param.vue';
+  import sheep from '@/sheep';
 
   const state = reactive({
     skeletonLoading: true, // 加载中
     craftList: [],
     selectedCraftList: [],
     leftLens: {
-      isSelf: false
+      isSelf: false,
     },
     showLeft: false,
+    showLeftParam: false,
     rightLens: {
-      isSelf: false
+      isSelf: false,
     },
     showRight: false,
+    showRightParam: false,
   });
 
-  const onConfirm = () => {
+  const confirm = () => {
     console.log(state.rightLens);
-    console.log('确认订单');
+
+    let items = [];
+    items.push({
+      skuId: state.rightLens.skuId,
+      count: 1,
+      categoryId: state.rightLens.categoryId,
+      orderLensList: [JSON.parse(JSON.stringify(state.rightLens))],
+    });
+    items.push({
+      skuId: state.leftLens.skuId,
+      count: 1,
+      categoryId: state.leftLens.categoryId,
+      orderLensList: [JSON.parse(JSON.stringify(state.leftLens))],
+    });
+
+    sheep.$router.go('/pages/order/confirm', {
+      data: JSON.stringify({
+        items,
+        deliveryType: 1,
+        pointStatus: false,
+      }),
+    });
   };
 
   async function getCraftList() {
@@ -35,6 +60,24 @@
     state.craftList = data.map(i => {
       return { text: `${i.craftName} ￥${fen2yuan(i.price)}`, value: i.id, origin: i };
     });
+  }
+
+  function onSelectLens(isLeft, lensSku) {
+    debugger
+    state.showLeft = false;
+    state.showRight = false;
+
+    if (isLeft) {
+      state.leftLens = lensSku;
+      if (lensSku) {
+        state.showLeftParam = true;
+      }
+    } else {
+      state.rightLens = lensSku;
+      if (lensSku) {
+        state.showRightParam = true;
+      }
+    }
   }
 
   onLoad(async () => {
@@ -59,23 +102,49 @@
         </view>
         <view class="product-section bg-white">
           <view class="ss-flex ss-row-between">
-            <view>右眼镜片</view>
-            <view>
-              <button class="ss-reset-button ss-flex ss-col-center ss-row-center" @tap="state.showLeft = true">
-                选择&nbsp;<text class="_icon-forward" style="color: #bbbbbb; font-size: 26rpx"></text>
-              </button>
-              <process-cart-list :show="state.showLeft" @close="state.showLeft = false" />
-            </view>
-          </view>
-        </view>
-        <view class="product-section bg-white">
-          <view class="ss-flex ss-row-between">
             <view>左眼镜片</view>
             <view>
               <button class="ss-reset-button ss-flex ss-col-center ss-row-center" @tap="state.showRight = true">
                 选择&nbsp;<text class="_icon-forward" style="color: #bbbbbb; font-size: 26rpx"></text>
               </button>
-              <process-cart-list :show="state.showRight" @close="state.showRight = false" />
+              <process-cart-list :show="state.showRight" @close="state.showRight = false"
+                                 @confirm="(lens) => onSelectLens(true, lens)" :left-or-right="1" />
+            </view>
+          </view>
+        </view>
+        <view class="product-section bg-white">
+          <view class="ss-flex ss-row-between">
+            <view>左眼参数</view>
+            <view>
+              <button class="ss-reset-button ss-flex ss-col-center ss-row-center" @tap="state.showLeftParam = true">
+                编辑&nbsp;<text class="_icon-forward" style="color: #bbbbbb; font-size: 26rpx"></text>
+              </button>
+              <process-lens-param :show="state.showLeftParam" @close="state.showLeftParam = false"
+                                  v-model="state.leftLens" />
+            </view>
+          </view>
+        </view>
+        <view class="product-section bg-white">
+          <view class="ss-flex ss-row-between">
+            <view>右眼镜片</view>
+            <view>
+              <button class="ss-reset-button ss-flex ss-col-center ss-row-center" @tap="state.showLeft = true">
+                选择&nbsp;<text class="_icon-forward" style="color: #bbbbbb; font-size: 26rpx"></text>
+              </button>
+              <process-cart-list :show="state.showLeft" @close="state.showLeft = false"
+                                 @confirm="(lens) => onSelectLens(false, lens)" left-or-right="2" />
+            </view>
+          </view>
+        </view>
+        <view class="product-section bg-white">
+          <view class="ss-flex ss-row-between">
+            <view>右眼参数</view>
+            <view>
+              <button class="ss-reset-button ss-flex ss-col-center ss-row-center" @tap="state.showRightParam = true">
+                编辑&nbsp;<text class="_icon-forward" style="color: #bbbbbb; font-size: 26rpx"></text>
+              </button>
+              <process-lens-param :show="state.showRightParam" @close="state.showRightParam = false"
+                                  v-model="state.rightLens" />
             </view>
           </view>
         </view>
@@ -89,7 +158,7 @@
           </view>
           <button
             class="ss-reset-button ui-BG-Main-Gradient ss-r-40 submit-btn ui-Shadow-Main"
-            @tap="onConfirm"
+            @tap="confirm"
           >
             确认订单
           </button>
@@ -107,6 +176,7 @@
     .craft-section {
       padding: 20rpx;
     }
+
     .product-section {
       margin-top: 5px;
       padding: 20rpx;
