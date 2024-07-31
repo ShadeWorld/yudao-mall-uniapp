@@ -93,7 +93,6 @@
 
   onLoad((options) => {
     getAreaData();
-    console.log(uni.getStorageSync('areaData'));
     state.areaData = uni.getStorageSync('areaData');
   });
 </script>

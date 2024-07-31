@@ -37,6 +37,13 @@
           />
         </template>
       </template>
+      <view class="order-item ss-flex flex-wrap ss-col-center ss-row-left ss-p-x-20 ss-p-t-10 ss-p-b-20 bg-white ss-r-10 ss-m-b-10">
+        <view class="ss-m-r-10 ss-m-t-10" v-for="craft in state.orderPayload.craftList" :key="craft.craftId">
+          <uni-tag :text="`${craft.craftName} ￥${fen2yuan(craft.price)}`"
+                   custom-style="box-shadow: var(--ui-Main-box-shadow) !important; background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient)); color: #fff; border: none !important; margin-right: 10rpx; display: inline-block;">
+          </uni-tag>
+        </view>
+      </view>
       <view class="order-item ss-flex ss-col-center ss-row-between ss-p-x-20 bg-white ss-r-10">
         <view class="item-title">订单备注</view>
         <view class="ss-flex ss-col-center">
@@ -62,18 +69,12 @@
             </text>
           </view>
         </view>
-        <!-- TODO 芋艿：接入积分 -->
-        <view
-          class="order-item ss-flex ss-col-center ss-row-between"
-          v-if="state.orderPayload.order_type === 'score'"
-        >
-          <view class="item-title">扣除积分</view>
+        <view class="order-item ss-flex ss-col-center ss-row-between">
+          <view class="item-title">工艺金额</view>
           <view class="ss-flex ss-col-center">
-            <image
-              :src="sheep.$url.static('/static/img/shop/goods/score1.svg')"
-              class="score-img"
-            />
-            <text class="item-value ss-m-r-24">{{ state.orderInfo.score_amount }}</text>
+            <text class="item-value ss-m-r-24">
+              ￥{{ fen2yuan(state.orderInfo.price.craftPrice) }}
+            </text>
           </view>
         </view>
         <view class="order-item ss-flex ss-col-center ss-row-between">
@@ -268,6 +269,7 @@
   async function submitOrder() {
     const { code, data } = await OrderApi.createOrder({
       items: state.orderPayload.items,
+      craftList: state.orderPayload.craftList,
       couponId: state.orderPayload.couponId,
       addressId: state.addressInfo.id,
       deliveryTemplateId: state.orderInfo.deliveryTemplateId,
@@ -291,6 +293,7 @@
     const { data, code } = await OrderApi.settlementOrder({
       deliveryTemplateId: state.orderPayload.deliveryTemplateId,
       items: state.orderPayload.items,
+      craftList: state.orderPayload.craftList,
       couponId: state.orderPayload.couponId,
       addressId: state.addressInfo.id,
       deliveryType: 1, // TODO 芋艿：需要支持【门店自提】
@@ -342,6 +345,7 @@
       return;
     }
     state.orderPayload = JSON.parse(options.data);
+    console.log(state.orderPayload);
     await getOrderInfo();
     await getCoupons();
     await getDeliveryTemplates();
@@ -383,7 +387,7 @@
   }
 
   .order-item {
-    height: 80rpx;
+    min-height: 80rpx;
 
     .item-title {
       font-size: 28rpx;

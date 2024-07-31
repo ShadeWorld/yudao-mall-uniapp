@@ -33,6 +33,9 @@
       skuId: item.sku.id,
       spuId: item.spu.id,
       categoryId: item.spu.categoryId,
+      spuName: item.spu.name,
+      picUrl: item.spu.picUrl,
+      price: item.sku.price,
       ...item.cartLens
     }
     lens.leftOrRight = props.leftOrRight;
@@ -43,10 +46,6 @@
     emits('confirm', {
       isSelf: true
     });
-  }
-
-  function notProcess() {
-    emits('confirm', undefined);
   }
 
   function cartItemContext(item) {
@@ -92,8 +91,7 @@
     <!-- 操作区 -->
     <view class="modal-footer border-top">
       <view class="buy-box ss-flex ss-col-center ss-flex ss-col-center ss-row-center">
-        <button class="ss-reset-button option-btn ui-Shadow-Main" @tap="selfLensProcess">来片加工</button>
-        <button class="ss-reset-button option-btn ui-Shadow-Main" @tap="notProcess">不加工</button>
+        <button class="ss-reset-button option-btn ui-Shadow-Main" @tap="selfLensProcess">自备镜片</button>
         <button class="ss-reset-button option-btn ui-Shadow-Main" @tap="() => sheep.$router.go('/pages/index/category')">去选购</button>
       </view>
     </view>
@@ -109,10 +107,9 @@
     width: 100%;
     border-radius: 30rpx 30rpx 0 0;
     max-height: 1000rpx;
-    min-height: 700rpx;
 
     .cart-content {
-      margin-top: 70rpx;
+      margin-top: 40rpx;
 
       .goods-box {
         background-color: #fff;
