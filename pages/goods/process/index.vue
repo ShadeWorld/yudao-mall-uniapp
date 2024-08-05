@@ -1,5 +1,5 @@
 <script setup>
-  import { reactive } from 'vue';
+  import { computed, reactive } from 'vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
   import SuFixed from '@/sheep/ui/su-fixed/su-fixed.vue';
   import { fen2yuan } from '@/sheep/hooks/useGoods';
@@ -10,6 +10,7 @@
   import ProcessLensParam from '@/pages/goods/process/components/process-lens-param.vue';
   import sheep from '@/sheep';
   import { getTimeStatusEnum } from '@/sheep/util/const';
+  import { EmptyToDefault } from '@/sheep/helper/utils';
 
   const state = reactive({
     skeletonLoading: true, // 加载中
@@ -143,6 +144,18 @@
     }
   }
 
+  const totalPrice = () => {
+    let craftPrice = state.craftList.filter(item => state.selectedCraftIdList.includes(item.value)).reduce((acc, cur) => acc + cur.origin.price, 0);
+    let lensPrice = 0;
+    if (state.leftLens && !state.leftLens.isSelf) {
+      lensPrice += state.leftLens.price;
+    }
+    if (state.rightLens && !state.rightLens.isSelf) {
+      lensPrice += state.rightLens.price;
+    }
+    return craftPrice + lensPrice;
+  }
+
   onLoad(async () => {
     await getCraftList();
   });
@@ -256,7 +269,7 @@
         <view class="footer-box border-top ss-flex ss-row-between ss-p-x-20 ss-col-center">
           <view class="total-box-footer ss-flex ss-col-center">
             <view class="total-num ss-font-30 text-red">
-              ￥{{ fen2yuan(0) }}
+              ￥{{ fen2yuan(totalPrice()) }}
             </view>
           </view>
           <button

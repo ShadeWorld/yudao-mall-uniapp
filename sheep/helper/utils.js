@@ -6,6 +6,10 @@ export function isArray(value) {
   }
 }
 
+export function EmptyToDefault(value, defaultValue) {
+  return isEmpty(value) ? defaultValue : value;
+}
+
 export function isObject(value) {
   return Object.prototype.toString.call(value) === '[object Object]';
 }
