@@ -100,7 +100,6 @@
     const { code, data } = await BrandApi.getBrandListByCategoryId(
       state.categoryList[state.activeMenu].id,
     );
-    console.log(data);
     if (code !== 0) {
       return;
     }

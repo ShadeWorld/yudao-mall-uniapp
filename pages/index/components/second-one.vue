@@ -13,12 +13,7 @@
         class="goods-item"
         v-for="item in data"
         :key="item.id"
-        @tap="
-          sheep.$router.go('/pages/goods/list', {
-            brandId: item.id,
-            categoryId: category.id,
-          })
-        "
+        @tap="goProductList(category.id, item)"
       >
         <image class="goods-img" :src="item.picUrl" mode="aspectFill" />
         <view class="ss-p-10">
@@ -43,6 +38,26 @@
     },
     category: Object,
   });
+
+  function isLensCategory(categoryId) {
+    return categoryId === 1 || categoryId === 2
+  }
+
+  function goProductList(categoryId, item) {
+    if (isLensCategory(categoryId)) {
+      sheep.$router.go('/pages/goods/lens-list', {
+        brandName: item.name,
+        brandId: item.id,
+        brandPicUrl: item.picUrl,
+        categoryId: categoryId,
+      })
+    } else {
+      sheep.$router.go('/pages/goods/list', {
+        brandId: item.id,
+        categoryId: categoryId,
+      })
+    }
+  }
 </script>
 
 <style lang="scss" scoped>

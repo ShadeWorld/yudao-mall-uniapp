@@ -142,7 +142,7 @@
           <view class="order-list" v-for="lensItem in item.orderLensList" :key="lensItem.id">
             <view class="order-card">
               <s-goods-item
-                @tap="onGoodsDetail(item.skuId)"
+                @tap="onGoodsDetail(item.spuId)"
                 :img="item.picUrl"
                 :title="item.spuName"
                 :skuText="skuTextContent(lensItem)"
@@ -155,7 +155,7 @@
         <view class="order-list" v-else>
           <view class="order-card">
             <s-goods-item
-              @tap="onGoodsDetail(item.skuId)"
+              @tap="onGoodsDetail(item.spuId)"
               :img="item.picUrl"
               :title="item.spuName"
               :skuText="skuTextContent(item)"
