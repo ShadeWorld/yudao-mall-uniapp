@@ -26,11 +26,11 @@ const SpuApi = {
     });
   },
   // 查询商品
-  getSpuDetail: (id) => {
+  getSpuDetail: (params) => {
     return request({
       url: '/product/spu/get-detail',
       method: 'GET',
-      params: { id },
+      params,
       custom: {
         showLoading: false,
         showError: false,
@@ -49,34 +49,10 @@ const SpuApi = {
       },
     });
   },
-  // 查询商品品种
-  getKindList: (params) => {
+  // 查询商品属性
+  getLensProp: (params) => {
     return request({
-      url: '/product/spu/get-kind-list',
-      method: 'GET',
-      params,
-      custom: {
-        showLoading: false,
-        showError: false,
-      },
-    });
-  },
-  // 查询商品折射率
-  getRefractiveList: (params) => {
-    return request({
-      url: '/product/spu/get-refractive-list',
-      method: 'GET',
-      params,
-      custom: {
-        showLoading: false,
-        showError: false,
-      },
-    });
-  },
-  // 查询商品膜层
-  getFilmLayerList: (params) => {
-    return request({
-      url: '/product/spu/get-film-layer-list',
+      url: '/product/spu/get-lens-prop',
       method: 'GET',
       params,
       custom: {
