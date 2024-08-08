@@ -150,6 +150,28 @@ export function round(num, ratio) {
 }
 
 /**
+ * 向上取整
+ * @export
+ */
+export function up(num, ratio) {
+  const base = Math.pow(10, ratio);
+  let result = divide(Math.ceil(Math.abs(times(num, base))), base);
+  if (num < 0 && result !== 0) {
+    result = times(result, -1);
+  }
+  // 位数不足则补0
+  return result;
+}
+
+/**
+ * 判断是否为数字
+ * @param value
+ */
+export function isNumeric(value) {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+/**
  * 是否进行边界检查，默认开启
  * @param flag 标记开关，true 为开启，false 为关闭，默认为 true
  * @export
@@ -159,10 +181,12 @@ export function enableBoundaryChecking(flag = true) {
 }
 
 export default {
+  isNumeric,
   times,
   plus,
   minus,
   divide,
   round,
+  up,
   enableBoundaryChecking,
 };

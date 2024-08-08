@@ -10,16 +10,27 @@
     <!-- 二级分类的名字 -->
     <view class="goods-item-box ss-flex ss-flex-wrap ss-p-b-20">
       <view
+        v-if="!showItem"
         class="goods-item"
-        v-for="item in data"
+        v-for="(item, index) in data"
         :key="item"
-        @tap="onSelect(item)"
+        @tap="onSelect(item, index)"
       >
         <view class="ss-p-10">
-          <view class="goods-title ss-line-1 ss-flex ss-col-center" :class="{'disable-item':(selectedData && selectedData !== item) || (selected && !existData.includes(item))}">
+          <view class="goods-title ss-line-1 ss-flex ss-col-center"
+                :class="{'disable-item':(selectedData && selectedData !== item) || (selected && !existData.includes(item))}">
             <view class="inner-goods-title"
-                  :class="{'light-item':selectedData === item, 'confirm-item':!selectedData && existData.includes(item)}">
+                  :class="{'light-item':selectedData === item, 'confirm-item':!selectedData && existData.includes(item), 'small-item': item.length > 7}">
               {{ item }}
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="goods-item" v-if="showItem">
+        <view class="ss-p-10">
+          <view class="goods-title ss-line-1 ss-flex ss-col-center disable-item">
+            <view class="inner-goods-title light-item">
+              {{ showItem }}
             </view>
           </view>
         </view>
@@ -29,7 +40,8 @@
 </template>
 
 <script setup>
-  import sheep from '@/sheep';
+
+  import { nextTick } from 'vue';
 
   const emit = defineEmits(['onSelect']);
   const props = defineProps({
@@ -47,10 +59,11 @@
       default: () => false,
     },
     title: String,
+    showItem: String,
   });
 
-  function onSelect(item) {
-    emit('onSelect', item);
+  function onSelect(item, index) {
+    emit('onSelect', item, index);
   }
 </script>
 
@@ -93,6 +106,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        white-space: nowrap;
+      }
+
+      .small-item {
+
       }
 
       .light-item {
@@ -100,6 +118,7 @@
         color: var(--ui-BG-Main);
         background: var(--ui-BG-Main-light);
       }
+
       .confirm-item {
         border: 1px dashed var(--ui-BG-Main);
       }

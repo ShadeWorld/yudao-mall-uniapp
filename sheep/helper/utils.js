@@ -161,6 +161,15 @@ export function isWxBrowser() {
   }
 }
 
+export function getActualWidthOfChars(text, options = {}) {
+  const { size = 16, family = "Microsoft YaHei" } = options;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  ctx.font = `${size}px ${family}`;
+  const metrics = ctx.measureText(text);
+  return Math.abs(metrics.actualBoundingBoxLeft) + Math.abs(metrics.actualBoundingBoxRight);
+}
+
 /**
  * @description 如果value小于min，取min；如果value大于max，取max
  * @param {number} min

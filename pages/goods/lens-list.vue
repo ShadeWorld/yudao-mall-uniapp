@@ -34,22 +34,27 @@
         >
           <lens-list-right
             v-if="state.style === 'second_one'"
+            title="系列"
+            :show-item="series"
+          />
+          <lens-list-right
+            v-if="state.style === 'second_one'"
             :category="state.seriesList[state.activeMenu]"
             :data="state.kindList"
             :exist-data="state.existsKindList"
             :selected-data="state.kind"
             :selected="selected"
-            @on-select="(data) => onItem(data, 'kind')"
+            @on-select="(data) => onItem('kind', data)"
             title="品种"
           />
           <lens-list-right
             v-if="state.style === 'second_one'"
             :category="state.seriesList[state.activeMenu]"
-            :data="state.refractiveList"
-            :exist-data="state.existsRefractiveList"
-            :selected-data="state.refractive"
+            :data="showRefractive"
+            :exist-data="existsRefractive"
+            :selected-data="showSelectedRefractive"
             :selected="selected"
-            @on-select="(data) => onItem(data, 'refractive')"
+            @on-select="(data, index) => onItem('refractive', data, index)"
             title="折射率"
           />
           <lens-list-right
@@ -59,7 +64,7 @@
             :exist-data="state.existsFilmLayerList"
             :selected-data="state.filmLayer"
             :selected="selected"
-            @on-select="(data) => onItem(data, 'filmLayer')"
+            @on-select="(data) => onItem('filmLayer', data)"
             title="膜层"
           />
         </scroll-view>
@@ -87,6 +92,7 @@
   import { onLoad } from '@dcloudio/uni-app';
   import { computed, reactive, ref } from 'vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
+  import { isNumeric, up } from '@/sheep/helper/digit';
 
   const state = reactive({
     placeholderHeight: 0,
@@ -108,6 +114,17 @@
     refractive: undefined,
     filmLayer: undefined,
   });
+
+
+  const formatRefractive = (value) => {
+    if (!isNumeric(value)) return value;
+    let number = parseFloat(value);
+    let result = up(number, 2).toFixed(2);
+    return result === '1.60' ? '1.61' : result;
+  };
+  const showRefractive = computed(() => state.refractiveList.map(i => formatRefractive(i, 2)));
+  const existsRefractive = computed(() => state.existsRefractiveList.map(i => formatRefractive(i, 2)));
+  const showSelectedRefractive = computed(() => formatRefractive(state.refractive, 2));
 
   const { safeArea } = sheep.$platform.device;
   const pageHeight = computed(() => safeArea.height - 44 - 50);
@@ -155,8 +172,8 @@
     });
   };
 
-  const onItem = async (val, key) => {
-    if (state[key] === val) {
+  const onItem = async (key, val, index) => {
+    if (state[key] === val || (key === 'refractive' && state[key] === state.refractiveList[index])) {
       // 反选
       state[key] = undefined;
       selected.value = state.kind || state.refractive || state.filmLayer;
@@ -169,7 +186,7 @@
       }
     } else {
       // 选中
-      state[key] = val;
+      state[key] = key === 'refractive' ? state.refractiveList[index] : val;
     }
     SpuApi.getLensProp({
       id: state.brandId,
@@ -244,6 +261,7 @@
             margin: 22rpx 22rpx 22rpx 10rpx;
             aspect-ratio: 1 / 1;
             background: #ffffff;
+
             .logo-img {
               border-radius: 5px;
               width: calc(100% - 30rpx);
