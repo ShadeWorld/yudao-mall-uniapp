@@ -122,9 +122,9 @@
     let result = up(number, 2).toFixed(2);
     return result === '1.60' ? '1.61' : result;
   };
-  const showRefractive = computed(() => state.refractiveList.map(i => formatRefractive(i, 2)));
+  const showRefractive = computed(() => Array.from(new Set(state.refractiveList.map(i => formatRefractive(i, 2)))));
   const existsRefractive = computed(() => state.existsRefractiveList.map(i => formatRefractive(i, 2)));
-  const showSelectedRefractive = computed(() => formatRefractive(state.refractive, 2));
+  const showSelectedRefractive = ref();
 
   const { safeArea } = sheep.$platform.device;
   const pageHeight = computed(() => safeArea.height - 44 - 50);
@@ -151,6 +151,7 @@
     state.kind = undefined;
     state.refractive = undefined;
     state.filmLayer = undefined;
+    showSelectedRefractive.value = undefined;
     state.existsRefractiveList = [];
     state.existsFilmLayerList = [];
     state.existsKindList = [];
@@ -173,9 +174,12 @@
   };
 
   const onItem = async (key, val, index) => {
-    if (state[key] === val || (key === 'refractive' && state[key] === state.refractiveList[index])) {
+    if (state[key] === val || (key === 'refractive' && showSelectedRefractive.value === val)) {
       // 反选
       state[key] = undefined;
+      if (key === 'refractive') {
+        showSelectedRefractive.value = undefined;
+      }
       selected.value = state.kind || state.refractive || state.filmLayer;
       if (!selected.value) {
         state.existsRefractiveList = [];
@@ -186,7 +190,12 @@
       }
     } else {
       // 选中
-      state[key] = key === 'refractive' ? state.refractiveList[index] : val;
+      if (key === 'refractive') {
+        state[key] = state.refractiveList.filter(i => formatRefractive(i) === val).join(',');
+        showSelectedRefractive.value = val;
+      } else {
+        state[key] = val;
+      }
     }
     SpuApi.getLensProp({
       id: state.brandId,
@@ -213,6 +222,9 @@
         if (only) {
           dict.filter(i => i !== key).forEach(i => {
             state[i] = data[i + 'List'][0];
+            if (i === 'refractive') {
+              showSelectedRefractive.value = formatRefractive(data[i + 'List'][0]);
+            }
           });
           sheep.$helper.toast('已自动选择唯一商品');
         }
