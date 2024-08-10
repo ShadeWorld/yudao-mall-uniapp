@@ -271,6 +271,10 @@
       interval[1];
   };
 
+  const nearZero = (val1, val2) => {
+    return Math.min(val1 - 0, val2 - 0);
+  };
+
   const init = (goodsInfo) => {
     let defaultSku;
     // 球、柱、下加光都是优先找包含0度的
@@ -311,9 +315,9 @@
       // 如果没有默认光度，就代表没有找到三个都包含0度的，这里默认光度都用默认sku的最小值
       defaultSkuLens = {
         id: defaultSku.id,
-        sph: between(0, [defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph]) ? 0 : Math.min(defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph),
-        cyl: between(0, [defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl]) ? 0 : Math.min(defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl),
-        add: between(0, [defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd]) ? 0 : Math.min(defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd),
+        sph: between(0, [defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph]) ? 0 : nearZero(defaultSku.skuLens.minSph, defaultSku.skuLens.maxSph),
+        cyl: between(0, [defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl]) ? 0 : nearZero(defaultSku.skuLens.minCyl, defaultSku.skuLens.maxCyl),
+        add: between(0, [defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd]) ? 0 : nearZero(defaultSku.skuLens.minAdd, defaultSku.skuLens.maxAdd),
         goods_num: 1,
         categoryId: goodsInfo.categoryId,
       };

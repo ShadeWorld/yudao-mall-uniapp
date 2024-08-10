@@ -173,7 +173,7 @@
     });
   };
 
-  const onItem = async (key, val, index) => {
+  const onItem = (key, val, index) => {
     if (state[key] === val || (key === 'refractive' && showSelectedRefractive.value === val)) {
       // 反选
       state[key] = undefined;
@@ -198,6 +198,7 @@
       }
     }
     SpuApi.getLensProp({
+      categoryId: state.categoryId,
       id: state.brandId,
       series: series.value,
       kind: state.kind,
@@ -220,7 +221,7 @@
           return prev && data[item + 'List'].length === 1;
         }, true);
         if (only) {
-          dict.filter(i => i !== key).forEach(i => {
+          dict.filter(i => i !== key && !state[i]).forEach(i => {
             state[i] = data[i + 'List'][0];
             if (i === 'refractive') {
               showSelectedRefractive.value = formatRefractive(data[i + 'List'][0]);
