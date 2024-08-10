@@ -247,7 +247,29 @@
   };
 
   const onSelectDegree = (degree) => {
-    state.lensList[state.selectedRowIndex][state.selectedType] = degree;
+    // 当前选中行
+    let lensRow = state.lensList[state.selectedRowIndex];
+    // 原始度数
+    let origin = lensRow[state.selectedType];
+    // 修改度数
+    lensRow[state.selectedType] = degree;
+    // 查找对应的sku
+    let sku = selectSku(lensRow.sph, lensRow.cyl, lensRow.add);
+    if (sku) {
+      lensRow.id = sku.id;
+    } else {
+      sheep.$helper.toast('度数不存在，请刷新后重试');
+      lensRow[state.selectedType] = origin;
+    }
+  };
+
+  const selectSku = (sph, cyl, add) => {
+    return props.goodsInfo.skus
+      .find((sku) =>
+        between(sph, [sku.skuLens.minSph, sku.skuLens.maxSph])
+        && between(cyl, [sku.skuLens.minCyl, sku.skuLens.maxCyl])
+        && between(add, [sku.skuLens.minAdd, sku.skuLens.maxAdd]),
+      );
   };
 
   const onSelectLeftOrRight = (leftOrRight) => {

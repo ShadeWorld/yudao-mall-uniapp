@@ -21,7 +21,7 @@
             <view class="ss-flex ss-row-between ss-col-center ss-m-b-26">
               <view class="price-box ss-flex ss-col-bottom">
                 <view class="price-text ss-m-r-16">
-                  {{ fen2yuan(state.selectedSku.price || state.goodsInfo.price) }}
+                  {{ priceRange }}
                 </view>
                 <view class="origin-price-text" v-if="state.goodsInfo.marketPrice > 0">
                   {{ fen2yuan(state.selectedSku.marketPrice || state.goodsInfo.marketPrice) }}
@@ -58,8 +58,8 @@
             <detail-cell-sku v-model="state.selectedSku.goods_sku_text" :sku="state.selectedSku"
                              @tap="state.showSelectSku = true" />
             <view style="border-top:1px solid #eee; border-radius: 1px; width: 95%; margin: auto;"></view>
-<!--            <detail-cell-param v-model="state.selectedSku.goods_sku_text"-->
-<!--                               :properties="state.goodsInfo.properties" @tap="state.showSpuParam = true" />-->
+            <!--            <detail-cell-param v-model="state.selectedSku.goods_sku_text"-->
+            <!--                               :properties="state.goodsInfo.properties" @tap="state.showSpuParam = true" />-->
           </view>
 
           <!-- 规格与数量弹框 -->
@@ -74,7 +74,7 @@
         </view>
 
         <!-- 评价 -->
-<!--        <detail-comment-card class="detail-comment-selector" :goodsId="state.goodsId" />-->
+        <!--        <detail-comment-card class="detail-comment-selector" :goodsId="state.goodsId" />-->
         <!-- 详情 -->
         <detail-content-card class="detail-content-selector" :content="state.goodsInfo.description" />
 
@@ -153,6 +153,17 @@
     activityInfo: [], // 【满减送/限时折扣】可参与的 Activity 营销活动的列表
     activityList: [], // 【秒杀/拼团/砍价】可参与的 Activity 营销活动的列表
   });
+
+  const priceRange = computed(() => formatPriceRange(state.goodsInfo.skus));
+
+  function formatPriceRange(skuList) {
+    let priceArray = skuList.map(i => i.price).sort((a, b) => a - b);
+    let str = fen2yuan(priceArray[0]);
+    if (priceArray.length > 1) {
+      str += '-' + fen2yuan(priceArray[priceArray.length - 1]);
+    }
+    return str;
+  }
 
   // 规格变更
   function onSkuChange(e) {
@@ -291,7 +302,7 @@
       state.goodsInfo = res.data;
       state.goodsId = state.goodsInfo.id;
 
-        // 加载是否收藏
+      // 加载是否收藏
       FavoriteApi.isFavoriteExists(state.goodsId, 'goods').then((res) => {
         if (res.code !== 0) {
           return;
