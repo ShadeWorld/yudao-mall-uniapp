@@ -10,17 +10,17 @@
 </template>
 
 <script>
-  import { fontData } from './uniicons_file_vue.js';
-  import iconUrl from './uniicons.ttf';
+	import { fontData } from './uniicons_file_vue.js';
 
-  const getVal = (val) => {
+	const getVal = (val) => {
 		const reg = /^[0-9]*$/g
 		return (typeof val === 'number' || reg.test(val)) ? val + 'px' : val;
 	}
 
 	// #ifdef APP-NVUE
 	var domModule = weex.requireModule('dom');
-  domModule.addRule('fontFace', {
+	import iconUrl from './uniicons.ttf'
+	domModule.addRule('fontFace', {
 		'fontFamily': "uniicons",
 		'src': "url('" + iconUrl + "')"
 	});

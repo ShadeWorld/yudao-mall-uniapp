@@ -1,14 +1,13 @@
 {
-  "id": "uni-datetime-picker",
-  "displayName": "uni-datetime-picker 日期选择器",
-  "version": "2.2.34",
-  "description": "uni-datetime-picker 日期时间选择器，支持日历，支持范围选择",
+  "id": "uni-table",
+  "displayName": "uni-table 表格",
+  "version": "1.2.4",
+  "description": "表格组件，多用于展示多条结构类似的数据，如",
   "keywords": [
-    "uni-datetime-picker",
     "uni-ui",
     "uniui",
-    "日期时间选择器",
-    "日期时间"
+    "table",
+    "表格"
 ],
   "repository": "https://github.com/dcloudio/uni-ui",
   "engines": {
@@ -38,16 +37,12 @@
     "type": "component-vue"
   },
   "uni_modules": {
-    "dependencies": [
-			"uni-scss",
-			"uni-icons"
-		],
+    "dependencies": ["uni-scss","uni-datetime-picker"],
     "encrypt": [],
     "platforms": {
       "cloud": {
         "tcb": "y",
-        "aliyun": "y",
-        "alipay": "n"
+        "aliyun": "y"
       },
       "client": {
         "App": {
@@ -71,12 +66,12 @@
           "微信": "y",
           "阿里": "y",
           "百度": "y",
-          "字节跳动": "y",
+          "字节跳动": "n",
           "QQ": "y"
         },
         "快应用": {
-          "华为": "u",
-          "联盟": "u"
+          "华为": "n",
+          "联盟": "n"
         },
         "Vue": {
             "vue2": "y",
