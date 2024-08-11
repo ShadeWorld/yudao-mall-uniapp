@@ -150,6 +150,15 @@
 					}
 				},
 				{
+					"path": "batch-select-lens",
+					"meta": {
+						"sync": true,
+						"title": "批量选择",
+						"group": "商品",
+						"auth": true
+					}
+				},
+				{
 					"path": "comment/add",
 					"style": {
 						"navigationBarTitleText": "评价商品"

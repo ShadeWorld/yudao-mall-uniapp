@@ -70,18 +70,26 @@
         </scroll-view>
       </view>
     </view>
-    <view class="s-option">
-      <view class="option-box ss-flex ss-col-center">
-        <view class="option-left ss-flex ss-col-center ss-row-center">
+    <su-tabbar
+      :value="path"
+      :fixed="true"
+      :placeholder="true"
+      :safeAreaInsetBottom="true"
+      :inactiveColor="tabbar.style.color"
+      :activeColor="tabbar.style.activeColor"
+      :midTabBar="tabbar.mode === 2"
+      :customStyle="tabbarStyle">
+        <view class="option-box ss-flex ss-col-center">
+          <view class="option-left ss-flex ss-col-center ss-row-center">
 
+          </view>
+          <view class="option-right ss-flex ss-col-center ss-row-center">
+            <button class="ss-reset-button buy-btn ui-Shadow-Main" :class="{'disable-btn': !complete}" @tap="toDetail">
+              {{ !complete ? '暂无匹配商品' : '查看详情' }}
+            </button>
+          </view>
         </view>
-        <view class="option-right ss-flex ss-col-center ss-row-center">
-          <button class="ss-reset-button buy-btn ui-Shadow-Main" :class="{'disable-btn': !complete}" @tap="toDetail">
-            {{ !complete ? '暂无匹配商品' : '查看详情' }}
-          </button>
-        </view>
-      </view>
-    </view>
+    </su-tabbar>
   </s-layout>
 </template>
 
@@ -93,6 +101,24 @@
   import { computed, reactive, ref } from 'vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
   import { isNumeric, up } from '@/sheep/helper/digit';
+  import SuTabbar from '@/sheep/ui/su-tabbar/su-tabbar.vue';
+
+  const tabbar = computed(() => {
+    return sheep.$store('app').template.basic?.tabbar;
+  });
+
+  const tabbarStyle = computed(() => {
+    const backgroundStyle = tabbar.value.style;
+    if (backgroundStyle.bgType === 'color') {
+      return { background: backgroundStyle.bgColor };
+    }
+    if (backgroundStyle.bgType === 'img')
+      return {
+        background: `url(${sheep.$url.cdn(
+          backgroundStyle.bgImg,
+        )}) no-repeat top center / 100% auto`,
+      };
+  });
 
   const state = reactive({
     placeholderHeight: 0,
@@ -364,42 +390,27 @@
     }
   }
 
-  .s-option {
-    height: 84px;
+  .option-box {
+    .option-left {
+      padding-left: 12rpx;
+      width: 200rpx;
+    }
 
-    .option-box {
-      z-index: 10;
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: -1;
-      box-shadow: 0px -2px 4px 0px rgba(51, 51, 51, 0.06);
-      background: #ffffff;
-      padding-top: 10px;;
-      padding-bottom: 34px;
-      padding-right: 20px;
+    .option-right {
+      width: calc(100vw - 100px);
 
-      .option-left {
-        padding-left: 12rpx;
-        width: 200rpx;
+      .buy-btn {
+        width: calc(100vw - 140px);
+        height: 80rpx;
+        border-radius: 40rpx;
+        background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
+        color: #fff;
       }
 
-      .option-right {
-        width: calc(100vw - 100px);
-
-        .buy-btn {
-          width: calc(100vw - 140px);
-          height: 80rpx;
-          border-radius: 40rpx;
-          background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
-          color: #fff;
-        }
-
-        .disable-btn {
-          color: #c6c6c6;
-          background: #f3f3f3;
-          box-shadow: none !important;
-        }
+      .disable-btn {
+        color: #c6c6c6;
+        background: #f3f3f3;
+        box-shadow: none !important;
       }
     }
   }

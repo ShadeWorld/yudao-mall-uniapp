@@ -84,8 +84,8 @@
         <!-- 详情 tabbar -->
         <detail-tabbar v-model="state.goodsInfo" :serviceIcon="false">
           <view class="buy-box ss-flex ss-col-center ss-p-r-20">
-            <button class="ss-reset-button add-btn ui-Shadow-Main" @tap="state.showSelectSku = true">
-              加入购物车
+            <button class="ss-reset-button add-btn ui-Shadow-Main" @tap="batchSelect()">
+              批量选择
             </button>
             <button class="ss-reset-button buy-btn ui-Shadow-Main" @tap="state.showSelectSku = true">
               立即购买
@@ -116,7 +116,6 @@
   } from '@dcloudio/uni-app';
   import sheep from '@/sheep';
   import CouponApi from '@/sheep/api/promotion/coupon';
-  import ActivityApi from '@/sheep/api/promotion/activity';
   import FavoriteApi from '@/sheep/api/product/favorite';
   import {
     formatSales,
@@ -125,10 +124,8 @@
   } from '@/sheep/hooks/useGoods';
   import detailNavbar from './components/detail/detail-navbar.vue';
   import detailCellSku from './components/detail/detail-cell-sku.vue';
-  import detailCellParam from './components/detail/detail-cell-param.vue';
   import detailTabbar from './components/detail/detail-tabbar.vue';
   import detailSkeleton from './components/detail/detail-skeleton.vue';
-  import detailCommentCard from './components/detail/detail-comment-card.vue';
   import detailContentCard from './components/detail/detail-content-card.vue';
   import detailActivityTip from './components/detail/detail-activity-tip.vue';
   import {
@@ -136,6 +133,8 @@
     isEmpty,
   } from 'lodash';
   import SpuApi from '@/sheep/api/product/spu';
+  import SBatchSelectLensSku from '@/pages/goods/batch-select-lens.vue';
+  import SLayout from '@/sheep/components/s-layout/s-layout.vue';
 
   onPageScroll(() => {
   });
@@ -144,6 +143,7 @@
     goodsId: 0,
     skeletonLoading: true, // SPU 加载中
     goodsInfo: {}, // SPU 信息
+    batchSelectSku: false, // 批量选择
     showSelectSku: false, // 是否展示 SKU 选择弹窗
     showSpuParam: false, // 是否展示商品参数弹窗
     selectedSku: {}, // 选中的 SKU
@@ -163,6 +163,10 @@
       str += '-' + fen2yuan(priceArray[priceArray.length - 1]);
     }
     return str;
+  }
+
+  function batchSelect() {
+    sheep.$router.go('/pages/goods/batch-select-lens', { data: JSON.stringify(state.goodsInfo) })
   }
 
   // 规格变更
