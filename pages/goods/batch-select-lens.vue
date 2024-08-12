@@ -2,18 +2,23 @@
   import { computed, reactive, ref } from 'vue';
   import { onLoad } from '@dcloudio/uni-app';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
+  import Base64 from 'base-64'
 
   const state = reactive({
+    goodsInfo: undefined,
     minSph:undefined,
     maxSph:undefined,
     minCyl:undefined,
     maxCyl:undefined,
     minAdd:undefined,
     maxAdd:undefined,
-    loading: false
+    loading: true
   });
   const rows = ref([]);
   const colList = ref([]);
+
+  const tableWidth = ref('100%');
+  const bodyWidth = ref('100%');
   // 普通镜片，只有球柱镜
   const isNormal = computed(() => state.minAdd === 0 && state.maxAdd === 0);
 
@@ -31,7 +36,7 @@
    */
   const getLensInfo = (sph, cyl = 0, add = 0) => {
     let lensInfo = {}
-    props.goodsInfo.skus.forEach((sku) => {
+    state.goodsInfo.skus.forEach((sku) => {
       if (
         between(sph, [sku.skuLens?.minSph, sku.skuLens?.maxSph]) &&
         between(cyl, [sku.skuLens?.minCyl, sku.skuLens?.maxCyl]) &&
@@ -100,6 +105,8 @@
     }
     // 把行按度数从低到高排序
     rows.value?.sort((a, b) => b.sph - a.sph)
+    tableWidth.value = `width: calc((${colList.value.length + 1} * ((100vw / 10) + 1px)) - 1px)`
+    bodyWidth.value = `width: calc((${colList.value.length} * ((100vw / 10) + 1px)) - 1px)`
   };
 
   function init(goodsInfo) {
@@ -126,111 +133,118 @@
   }
 
   onLoad(async (options) => {
-    init(JSON.parse(options.data));
-    state.loading = true;
+    state.goodsInfo = JSON.parse(decodeURIComponent(Base64.decode(options.data)));
+    init(state.goodsInfo);
+    state.loading = false;
   });
 </script>
 
 <template>
   <view>
     <s-layout navbar="normal" title="批量选择">
-      <uni-table ref="table" :loading="state.loading" border stripe type="selection" emptyText="暂无更多数据">
-        <uni-tr>
-          <uni-th width="150" align="center">
-            <!--(1, 1) 用于展示纵横（交叉）表头-->
-            {{ isNormal ? 'SPH/CYL' : 'SPH/ADD' }}
-          </uni-th>
-          <uni-th v-for="col in colList" :key="col" class="tab-head" align="center">
-            {{ col.toFixed(2) }}
-          </uni-th>
-        </uni-tr>
-        <uni-tr v-for="row in rows" :key="row.sph">
-          <uni-td>{{ row.sph.toFixed(2) }}</uni-td>
-          <uni-td
-            v-for="col in row.cols"
-            :key="isNormal ? `${row.sph}, ${col.cyl}` : `${row.sph}, ${col.add}`"
-            :class="{ 'td-selected': col.selected && col.skuId, 'td-disabled': !col.skuId }"
-          >
-            <div>
-              <input
-                v-model="col.count"
-                min="0"
-                step="1"
-                type="number"
-                class="count-input w-45"
-                :disabled="!col.skuId"
-              />
-            </div>
-          </uni-td>
-        </uni-tr>
-      </uni-table>
+      <view class="content">
+        <view style="border: 1px solid #bbbbbb">
+          <scroll-view scroll-y="true" scroll-x="true" class="lens-table">
+            <view :style="tableWidth">
+              <view class="left-top">
+                <view class="lens-item">
+                  <!--(1, 1) 用于展示纵横（交叉）表头-->
+                  {{ isNormal ? 'SPH/CYL' : 'SPH/ADD' }}
+                </view>
+              </view>
+              <view class="x-head">
+                <view class="lens-item" v-for="col in colList" :key="col" >
+                  {{ col.toFixed(2) }}
+                </view>
+              </view>
+              <view class="y-head">
+                <view class="lens-item" v-for="row in rows" :key="row.sph">
+                  {{ row.sph.toFixed(2) }}
+                </view>
+              </view>
+              <view class="table-body" :style="bodyWidth">
+                <view class="tr" v-for="row in rows" :key="row.sph">
+                  <view class="td lens-item" v-for="col in row.cols" :key="col.cyl">
+
+                  </view>
+                </view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
     </s-layout>
   </view>
 </template>
 
 <style scoped lang="scss">
-  table {
-    user-select: none;
-    font-size: 12px;
-    line-height: 18px;
-    table-layout: fixed;
-    border-left: 1px #ebeef5 solid;
-    border-top: 1px #ebeef5 solid;
-
-    thead tr td {
-      position: sticky;
-      top: 0;
-      background: #f4f4f5;
-      height: 30px;
-    }
-
-    tr {
-      td:first-child {
-        height: 30px;
-        position: sticky;
-        left: 0;
-        background: #f4f4f5;
-        right: 0;
-        text-align: center;
-      }
-
-      td {
-        width: 60px;
-        height: 25px;
-        border-bottom: 1px #ebeef5 solid;
-        border-right: 1px #ebeef5 solid;
-      }
-    }
+  .content {
+    margin: 20rpx 20rpx;
+  }
+  .left-top {
+    font-weight: bold;
+    display: inline-block;
+    background: #e9e9e9;
+    z-index: 99 !important;
+    position: sticky;
+    left: 0;
+    top: 0;
+  }
+  .x-head {
+    font-weight: bold;
+    background: #e9e9e9;
+    display: inline-flex;
+    flex-direction: row;
+    position: sticky;
+    top: 0;
+  }
+  .x-head .lens-item:last-child {
+    border-right: none !important;
+  }
+  .y-head {
+    font-weight: bold;
+    background: #e9e9e9;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    left: 0;
+    float: left;
+  }
+  .y-head .lens-item:last-child {
+    border-bottom: none !important;
   }
 
-  .tab-head {
+  .lens-item {
+    border-right: 1px solid #bbbbbb;
+    border-bottom: 1px solid #bbbbbb;
+    flex-shrink: 0;
+    width: calc((100vw) / 10);
     text-align: center;
-    cursor: pointer;
+    height: 42rpx;
+    vertical-align: middle;
+  }
+  .lens-table {
+    font-size: 16rpx;
+    max-height: 800rpx;
+  }
+  .table-body {
+    display: inline-flex;
+    flex-direction: column;
+    .tr {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
-  .w-45 {
-    width: 45px;
+  .table-body .tr:last-child .lens-item {
+    border-bottom: none !important;
+  }
+  .table-body .tr .lens-item:last-child {
+    border-right: none !important;
   }
 
-  .count-input {
-    -webkit-appearance: none !important;
-    line-height: 1;
-    margin: 0;
-    border: none;
-    outline: none;
-    background: none;
-    box-sizing: border-box;
-  }
-
-  .td-selected {
-    background: #29b6f6;
-  }
-
-  .td-disabled {
-    background: #e6e8eb;
-  }
-
-  input {
-    -webkit-appearance: none !important;
+  .td-item {
+    background: #f6f6f6;
   }
 </style>

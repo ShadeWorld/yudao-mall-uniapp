@@ -135,6 +135,7 @@
   import SpuApi from '@/sheep/api/product/spu';
   import SBatchSelectLensSku from '@/pages/goods/batch-select-lens.vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
+  import Base64 from 'base-64'
 
   onPageScroll(() => {
   });
@@ -166,7 +167,7 @@
   }
 
   function batchSelect() {
-    sheep.$router.go('/pages/goods/batch-select-lens', { data: JSON.stringify(state.goodsInfo) })
+    sheep.$router.go('/pages/goods/batch-select-lens', { data:  Base64.encode(encodeURIComponent(JSON.stringify(state.goodsInfo)))})
   }
 
   // 规格变更
