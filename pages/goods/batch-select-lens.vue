@@ -2,17 +2,17 @@
   import { computed, reactive, ref } from 'vue';
   import { onLoad } from '@dcloudio/uni-app';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
-  import Base64 from 'base-64'
+  import Base64 from 'base-64';
 
   const state = reactive({
     goodsInfo: undefined,
-    minSph:undefined,
-    maxSph:undefined,
-    minCyl:undefined,
-    maxCyl:undefined,
-    minAdd:undefined,
-    maxAdd:undefined,
-    loading: true
+    minSph: undefined,
+    maxSph: undefined,
+    minCyl: undefined,
+    maxCyl: undefined,
+    minAdd: undefined,
+    maxAdd: undefined,
+    loading: true,
   });
   const rows = ref([]);
   const colList = ref([]);
@@ -21,6 +21,29 @@
   const bodyWidth = ref('100%');
   // 普通镜片，只有球柱镜
   const isNormal = computed(() => state.minAdd === 0 && state.maxAdd === 0);
+
+  const selectLens = (row, col) => {
+    // 清空之前的高亮单元格
+    rows.value.forEach((item) => {
+      item.cols.forEach((col) => {
+        col.light = false;
+        col.selected = false;
+      });
+    });
+    // 设置当前单元格选中状态
+    col.selected = true;
+    // 设置高亮单元格
+    row.cols.forEach((item, index) => {
+      if (index < col.index) {
+        item.light = true;
+      }
+    });
+    rows.value.forEach((item, index) => {
+      if (index < row.index) {
+        item.cols[col.index].light = true;
+      }
+    });
+  };
 
   const between = (target, interval) => {
     interval.sort((a, b) => a - b);
@@ -35,7 +58,7 @@
    * @param add 加光
    */
   const getLensInfo = (sph, cyl = 0, add = 0) => {
-    let lensInfo = {}
+    let lensInfo = {};
     state.goodsInfo.skus.forEach((sku) => {
       if (
         between(sph, [sku.skuLens?.minSph, sku.skuLens?.maxSph]) &&
@@ -49,79 +72,79 @@
             // 联合光度也符合
             lensInfo = {
               skuId: sku.id,
-              price: sku.price
-            }
+              price: sku.price,
+            };
           }
         } else {
           // 未设置联合光度
           lensInfo = {
             skuId: sku.id,
-            price: sku.price
-          }
+            price: sku.price,
+          };
         }
       }
-    })
-    return lensInfo
+    });
+    return lensInfo;
   };
 
   const renderGrid = () => {
     // 清空横轴度数
-    colList.value.splice(0, colList.value.length)
-    for (let sph = state.maxSph; sph >= state.minSph; sph -= 0.25) {
+    colList.value.splice(0, colList.value.length);
+    for (let sph = state.maxSph, rowIndex = 0; sph >= state.minSph; sph -= 0.25, rowIndex++) {
       // 先找rows里面有没有这一行
-      let row = rows.value?.find((i) => i.sph === sph)
+      let row = rows.value?.find((i) => i.sph === sph);
       if (!row) {
         // 没有就new一个，然后push到rows里面
-        row = row ? row : { sph: sph, cols: [] }
-        rows.value?.push(row)
+        row = row ? row : { sph: sph, index: rowIndex, cols: [] };
+        rows.value?.push(row);
       }
       if (isNormal.value) {
         // 球镜和柱镜的情况
-        for (let cyl = state.maxCyl; cyl >= state.minCyl; cyl -= 0.25) {
+        for (let cyl = state.maxCyl, colIndex = 0; cyl >= state.minCyl; cyl -= 0.25, colIndex++) {
           if (sph === state.maxSph) {
             // 保存所有柱镜（只用保存一次，用于展示横向表头）
-            colList.value.push(cyl)
+            colList.value.push(cyl);
           }
           // 如果该行已经有这一列，就不用重新生成了
-          if (row.cols.findIndex((i) => i.cyl === cyl) > -1) continue
-          let col = { row: row, cyl: cyl, add: 0, ...getLensInfo(sph, cyl) }
-          row.cols.push(col)
+          if (row.cols.findIndex((i) => i.cyl === cyl) > -1) continue;
+          let col = { index: colIndex, row: row, cyl: cyl, add: 0, ...getLensInfo(sph, cyl) };
+          row.cols.push(col);
         }
-        row.cols.sort((a, b) => b.cyl - a.cyl)
+        row.cols.sort((a, b) => b.cyl - a.cyl);
       } else {
         // 球镜和ADD的情况
-        for (let add = state.maxAdd; add >= state.minAdd; add -= 0.25) {
+        for (let add = state.maxAdd, colIndex = 0; add >= state.minAdd; add -= 0.25, colIndex++) {
           if (sph === state.maxSph) {
             // 保存所有柱镜（只用保存一次，用于展示横向表头）
-            colList.value.push(add)
+            colList.value.push(add);
           }
           // 如果该行已经有这一列，就不用重新生成了
-          if (row.cols.findIndex((i) => i.add === add) > -1) continue
-          let col = { row: row, cyl: 0, add: add, ...getLensInfo(sph, 0, add) }
-          row.cols.push(col)
+          if (row.cols.findIndex((i) => i.add === add) > -1) continue;
+          let col = { index: colIndex, row: row, cyl: 0, add: add, ...getLensInfo(sph, 0, add) };
+          row.cols.push(col);
         }
-        row.cols.sort((a, b) => b.add - a.add)
+        row.cols.sort((a, b) => b.add - a.add);
       }
     }
     // 把行按度数从低到高排序
-    rows.value?.sort((a, b) => b.sph - a.sph)
-    tableWidth.value = `width: calc((${colList.value.length + 1} * ((100vw / 10) + 1px)) - 1px)`
-    bodyWidth.value = `width: calc((${colList.value.length} * ((100vw / 10) + 1px)) - 1px)`
+    rows.value?.sort((a, b) => b.sph - a.sph);
+    tableWidth.value = `width: calc((${colList.value.length + 1} * ((100vw / 10) + 1px)) - 1px)`;
+    bodyWidth.value = `width: calc((${colList.value.length} * ((100vw / 10) + 1px)) - 1px)`;
   };
 
   function init(goodsInfo) {
     // 生成光度范围
-    const sphRangeList = []
-    const cylRangeList = []
-    const addRangeList = []
+    const sphRangeList = [];
+    const cylRangeList = [];
+    const addRangeList = [];
     goodsInfo?.skus?.map((sku) => {
-      sphRangeList.push(sku.skuLens?.minSph, sku.skuLens?.maxSph)
-      cylRangeList.push(sku.skuLens?.minCyl, sku.skuLens?.maxCyl)
-      addRangeList.push(sku.skuLens?.minAdd, sku.skuLens?.maxAdd)
-    })
-    sphRangeList.sort((a, b) => a - b)
-    cylRangeList.sort((a, b) => a - b)
-    addRangeList.sort((a, b) => a - b)
+      sphRangeList.push(sku.skuLens?.minSph, sku.skuLens?.maxSph);
+      cylRangeList.push(sku.skuLens?.minCyl, sku.skuLens?.maxCyl);
+      addRangeList.push(sku.skuLens?.minAdd, sku.skuLens?.maxAdd);
+    });
+    sphRangeList.sort((a, b) => a - b);
+    cylRangeList.sort((a, b) => a - b);
+    addRangeList.sort((a, b) => a - b);
     state.minSph = sphRangeList[0];
     state.maxSph = sphRangeList[sphRangeList.length - 1];
     state.minCyl = cylRangeList[0];
@@ -147,13 +170,17 @@
           <scroll-view scroll-y="true" scroll-x="true" class="lens-table">
             <view :style="tableWidth">
               <view class="left-top">
-                <view class="lens-item">
+                <view class="lens-item" style="position: relative">
                   <!--(1, 1) 用于展示纵横（交叉）表头-->
-                  {{ isNormal ? 'SPH/CYL' : 'SPH/ADD' }}
+                  <view style="display: inline; position:relative; top: 4px">SPH</view>
+                  <view class="sloping-side" />
+                  <view style="display: inline; position:relative; top: -4px">
+                    {{ isNormal ? 'CYL' : 'ADD' }}
+                  </view>
                 </view>
               </view>
               <view class="x-head">
-                <view class="lens-item" v-for="col in colList" :key="col" >
+                <view class="lens-item" v-for="col in colList" :key="col">
                   {{ col.toFixed(2) }}
                 </view>
               </view>
@@ -163,9 +190,11 @@
                 </view>
               </view>
               <view class="table-body" :style="bodyWidth">
-                <view class="tr" v-for="row in rows" :key="row.sph">
-                  <view class="td lens-item" v-for="col in row.cols" :key="col.cyl">
-
+                <view class="tr" v-for="(row, rowIndex) in rows" :key="row.sph">
+                  <view class="td lens-item"
+                        :class="{'light-item': col.light, 'selected-item': col.selected, 'selected-left': row.cols[colIndex + 1]?.selected, 'selected-top': rowIndex !== rows.length - 1 && rows[rowIndex + 1][colIndex]?.selected}"
+                        v-for="(col, colIndex) in row.cols" :key="col.cyl"
+                        @tap="selectLens(row, col)">
                   </view>
                 </view>
               </view>
@@ -181,8 +210,8 @@
   .content {
     margin: 20rpx 20rpx;
   }
+
   .left-top {
-    font-weight: bold;
     display: inline-block;
     background: #e9e9e9;
     z-index: 99 !important;
@@ -190,6 +219,17 @@
     left: 0;
     top: 0;
   }
+
+  .sloping-side {
+    height: 0;
+    border-bottom: 1px solid gray;
+    width: calc(10vw + 10px);
+    position: absolute;
+    top: 10px;
+    left: -6px;
+    transform: rotate(-149deg);
+  }
+
   .x-head {
     font-weight: bold;
     background: #e9e9e9;
@@ -198,9 +238,11 @@
     position: sticky;
     top: 0;
   }
+
   .x-head .lens-item:last-child {
     border-right: none !important;
   }
+
   .y-head {
     font-weight: bold;
     background: #e9e9e9;
@@ -211,6 +253,7 @@
     left: 0;
     float: left;
   }
+
   .y-head .lens-item:last-child {
     border-bottom: none !important;
   }
@@ -221,16 +264,49 @@
     flex-shrink: 0;
     width: calc((100vw) / 10);
     text-align: center;
-    height: 42rpx;
-    vertical-align: middle;
+    height: 46rpx;
+    line-height: 46rpx;
+    white-space: nowrap;
   }
+
+  .light-item {
+    background: var(--ui-BG-Main-opacity-1);
+  }
+
+  .selected-item {
+    border-right: 1px solid var(--ui-BG-Main);
+    border-bottom: 1px solid var(--ui-BG-Main);
+  }
+
+  .selected-left {
+    border-right: 1px solid var(--ui-BG-Main);
+  }
+
+  .selected-top {
+    border-bottom: 1px solid var(--ui-BG-Main);
+  }
+
+  .selected-item::after {
+    position: relative;
+    left: -1px;
+    top: -1px;
+    border: 1px solid var(--ui-BG-Main);
+    width: calc((100vw) / 10);
+    height: 46rpx;
+    border-radius: 2px;
+    box-shadow: inset 0 0 1px 0.2px var(--ui-BG-Main),
+    0 0 1px 0.2px var(--ui-BG-Main);
+  }
+
   .lens-table {
-    font-size: 16rpx;
-    max-height: 800rpx;
+    font-size: 18rpx;
+    max-height: calc(100vh * 0.6);
   }
+
   .table-body {
     display: inline-flex;
     flex-direction: column;
+
     .tr {
       display: flex;
       flex-direction: row;
@@ -240,6 +316,7 @@
   .table-body .tr:last-child .lens-item {
     border-bottom: none !important;
   }
+
   .table-body .tr .lens-item:last-child {
     border-right: none !important;
   }

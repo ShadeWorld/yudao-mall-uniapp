@@ -84,7 +84,9 @@
         <!-- 详情 tabbar -->
         <detail-tabbar v-model="state.goodsInfo" :serviceIcon="false">
           <view class="buy-box ss-flex ss-col-center ss-p-r-20">
-            <button class="ss-reset-button add-btn ui-Shadow-Main" @tap="batchSelect()">
+            <button class="ss-reset-button add-btn ui-Shadow-Main"
+                    :class="{'disabled-btn': state.goodsInfo.lensProperty?.distinguishEye}" @tap="batchSelect()"
+                    :disabled="state.goodsInfo.lensProperty?.distinguishEye">
               批量选择
             </button>
             <button class="ss-reset-button buy-btn ui-Shadow-Main" @tap="state.showSelectSku = true">
@@ -135,7 +137,7 @@
   import SpuApi from '@/sheep/api/product/spu';
   import SBatchSelectLensSku from '@/pages/goods/batch-select-lens.vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
-  import Base64 from 'base-64'
+  import Base64 from 'base-64';
 
   onPageScroll(() => {
   });
@@ -167,7 +169,7 @@
   }
 
   function batchSelect() {
-    sheep.$router.go('/pages/goods/batch-select-lens', { data:  Base64.encode(encodeURIComponent(JSON.stringify(state.goodsInfo)))})
+    sheep.$router.go('/pages/goods/batch-select-lens', { data: Base64.encode(encodeURIComponent(JSON.stringify(state.goodsInfo))) });
   }
 
   // 规格变更
@@ -427,6 +429,12 @@
       color: var(--ui-BG-Main);
     }
 
+    .disabled-btn {
+      color: $white;
+      background-color: $gray-c;
+      box-shadow: 0 0.2em 0.5em $gray-c !important;
+    }
+
     .buy-btn {
       width: 214rpx;
       height: 72rpx;
@@ -435,14 +443,6 @@
 
       border-radius: 0 40rpx 40rpx 0;
       background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient));
-      color: $white;
-    }
-
-    .disabled-btn {
-      width: 428rpx;
-      height: 72rpx;
-      border-radius: 40rpx;
-      background: #999999;
       color: $white;
     }
   }
