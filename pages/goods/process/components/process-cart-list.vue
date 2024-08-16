@@ -71,7 +71,7 @@
     <!-- 头部 -->
     <view class="cart-box ss-flex ss-flex-col ss-row-between" v-if="state.list.length">
       <!-- 内容 -->
-      <view class="cart-content ss-flex-1 ss-p-x-30 ss-m-b-40">
+      <scroll-view :scroll-y="true" class="cart-content ss-flex-1 ss-p-x-30 ss-m-b-40">
         <view class="goods-box ss-r-10 ss-m-b-14" v-for="item in state.list" :key="item.id">
           <view class="ss-flex ss-col-center">
             <label class="check-box ss-flex ss-col-center ss-p-l-10" @tap="onSelectSingle(item)">
@@ -85,7 +85,7 @@
             </s-goods-item>
           </view>
         </view>
-      </view>
+      </scroll-view>
     </view>
 
     <!-- 操作区 -->
@@ -109,12 +109,17 @@
     max-height: 1000rpx;
 
     .cart-content {
+      max-height: 950rpx;
       margin-top: 40rpx;
 
       .goods-box {
         background-color: #fff;
       }
     }
+  }
+
+  .modal-footer {
+    background: #ffffff;
   }
 
   // 购买
