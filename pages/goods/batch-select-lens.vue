@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, nextTick, reactive, ref } from 'vue';
+  import { computed, reactive, ref } from 'vue';
   import { onLoad } from '@dcloudio/uni-app';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
   import Base64 from 'base-64';
@@ -51,10 +51,6 @@
     return { 'left': cellWidth - 4 + 'px', top: 19 + 'px' };
   });
 
-  const selectedColStyle = computed(() => {
-    return { 'opacity': Math.min(selectedEdge.leftOpacity, selectedEdge.topOpacity) };
-  });
-
   const rows = ref([]);
   const colList = ref([]);
 
@@ -63,70 +59,66 @@
   // 普通镜片，只有球柱镜
   const isNormal = computed(() => state.minAdd === 0 && state.maxAdd === 0);
 
+  const between = (target, interval) => {
+    interval.sort((a, b) => a - b);
+    return target >= interval[0] && target <=
+      interval[1];
+  };
+
   function countChange(e) {
     console.log(e);
     state.selectedCols.forEach(i => i.count = e);
   }
 
-  function calcSelectedEdge() {
-    const query = wx.createSelectorQuery();
-    query.select('.lens-item.selected-item').boundingClientRect();
-    query.exec(function(res) {
-      const left = res[0].left;
-      const top = res[0].top;
-
-      if (left < cellWidth + 10 || top < sheep.$platform.navbar + 33) {
-        selectedEdge.leftOpacity = (left - cellWidth) / 10;
-        selectedEdge.topOpacity = (top - sheep.$platform.navbar - 23) / 10;
-      } else {
-        selectedEdge.leftOpacity = 1;
-        selectedEdge.topOpacity = 1;
-      }
-    });
-  }
-
-  function selectRangeStart(e) {
-    console.log(e);
+  function selectRangeStart(e, col) {
     state.scrollX = false;
     state.scrollY = false;
-    const touches = e.changedTouches[0];
-    mousePosition.startX = touches.clientX;
-    mousePosition.startY = touches.clientY;
+    mousePosition.startX = col.index;
+    mousePosition.startY = col.row.index;
   }
 
   function selectRangeMove(e) {
-    const touches = e.changedTouches[0];
-    const mouseX = touches.clientX;
-    const mouseY = touches.clientY;
-    const xCount = (mouseX - 10) / (cellWidth + 1);
-    const yCount = (mouseY - sheep.$platform.navbar) / (23 + 1);
-    console.log('xCount, yCount', xCount, yCount);
-    rows.value?.forEach((row) => {
-      row.cols.forEach((col) => {
-        col.light = false;
-        col.selected = false;
-      });
-    });
-    // 遍历所有列，将选中的col.selected设为true
-    rows.value?.forEach((row) => {
-      if (row.index < yCount) {
-        row.cols.forEach((i) => {
-          if (i.index < xCount) {
-            i.selected = true;
-          }
+    const query = wx.createSelectorQuery();
+    query.select('#scroll-table').scrollOffset();
+    query.exec(function(res) {
+      const touches = e.changedTouches[0];
+      const mouseX = touches.clientX;
+      const mouseY = touches.clientY;
+      const xCount = Math.floor((mouseX + res[0].scrollLeft - 10) / (cellWidth + 1));
+      const yCount = Math.floor((mouseY + res[0].scrollTop - sheep.$platform.navbar - 10) / (23 + 1));
+      rows.value?.forEach((row) => {
+        row.cols.forEach((col) => {
+          col.light = false;
+          col.selected = false;
         });
-      }
+      });
+      // 遍历所有列，将选中的col.selected设为true
+      rows.value?.forEach((row) => {
+        if (between(row.index, [mousePosition.startY, yCount - 1])) {
+          row.cols.forEach((col) => {
+            if (between(col.index, [mousePosition.startX, xCount - 1])) {
+              col.selected = true;
+            } else {
+              // 剩下的取消选中
+              col.light = false;
+              col.selected = false;
+            }
+          });
+        } else {
+          // 剩下的取消选中
+          row.cols.forEach((col) => {
+            col.light = false;
+            col.selected = false;
+          });
+        }
+      });
+      console.log('xCount, yCount', mousePosition, xCount, yCount);
     });
   }
 
   function selectRangeEnd(e) {
     state.scrollX = true;
     state.scrollY = true;
-    console.log(e);
-  }
-
-  function onscroll(e) {
-    calcSelectedEdge();
   }
 
   function onAddCart() {
@@ -201,13 +193,6 @@
     if (state.selectedCols.length === 1) {
       state.inputCount = state.selectedCols[0].count;
     }
-    nextTick(() => calcSelectedEdge());
-  };
-
-  const between = (target, interval) => {
-    interval.sort((a, b) => a - b);
-    return target >= interval[0] && target <=
-      interval[1];
   };
 
   /**
@@ -328,7 +313,7 @@
     <s-layout navbar="normal" title="批量选择">
       <view class="content">
         <view style="box-shadow: 0 0.2em 0.5em #cccccc !important">
-          <scroll-view :scroll-y="state.scrollY" :scroll-x="state.scrollX" class="lens-table" @scroll="onscroll">
+          <scroll-view id="scroll-table" :scroll-y="state.scrollY" :scroll-x="state.scrollX" class="lens-table">
             <view :style="tableWidth">
               <view class="left-top">
                 <view class="lens-item" style="position: relative">
@@ -361,16 +346,17 @@
                         v-for="col in row.cols"
                         @tap="selectLens(row, col)"
                         :key="col.index">
-                    {{ col.count ? col.count : '' }}
-                    <view v-show="col.selected" class="left-select" @touchstart="selectRangeStart"
-                          @touchmove="selectRangeMove" @touchend="selectRangeEnd"></view>
-                    <view class="none" :class="{'selected-item-edge': col.selected}"
-                          :style="selectedColStyle">
-                      {{ col.count ? col.count : '' }}
-                    </view>
-                    <view v-show="col.selected" class="right-select" :style="rightSelectStyle"
-                          @tap="selectRange"></view>
+                    {{ col.index }}
+                    <!--                    {{ col.count ? col.count : '' }}-->
                   </view>
+                </view>
+                <view class="selected-shadow" v-show="state.selectedCols.length > 0">
+                  <view class="left-select" @touchstart="(e) => selectRangeStart(e, col)"
+                        @touchmove="selectRangeMove" @touchend="selectRangeEnd"></view>
+                  <view class="center-border"></view>
+                  <view class="right-select" :style="rightSelectStyle"
+                        @touchstart="selectRangeStart"
+                        @tap="selectRangeMove" @touchend="selectRangeEnd"></view>
                 </view>
               </view>
             </view>
@@ -477,21 +463,6 @@
     line-height: 23px;
     white-space: nowrap;
     position: relative;
-
-    .right-select, .left-select {
-      z-index: 102;
-      position: absolute;
-      background: #eeeeee !important;
-      width: 8px;
-      height: 8px;
-      box-shadow: inset 0 0 1px 1px var(--ui-BG-Main),
-      0 0 1px 1px var(--ui-BG-Main);
-    }
-
-    .left-select {
-      left: -4px;
-      top: -4px;
-    }
   }
 
   .light-item {
@@ -502,33 +473,7 @@
     background: #d5d7da !important;
   }
 
-  .selected-item-edge {
-    display: block !important;
-    z-index: 101 !important;
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: #eeeeee !important;
-    width: calc(100vw / 8);
-    height: 23px;
-    border-radius: 1px;
-    box-shadow: inset 0 0 1px 1px var(--ui-BG-Main),
-    0 0 1px 1px var(--ui-BG-Main);
-  }
-
   .selected-item::after {
-    z-index: 96;
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: #eeeeee !important;
-    width: calc(100vw / 8);
-    height: 23px;
-    border-radius: 1px;
-    box-shadow: inset 0 0 1px 1px var(--ui-BG-Main),
-    0 0 1px 1px var(--ui-BG-Main);
   }
 
   .lens-table {
@@ -543,6 +488,39 @@
     .tr {
       display: flex;
       flex-direction: row;
+    }
+
+    .selected-shadow {
+      position: relative;
+
+      .center-border {
+        z-index: 96;
+        content: "";
+        position: absolute;
+        left: -1px;
+        top: -1px;
+        background: rgba(3, 3, 3, 0.3) !important;
+        width: calc(100vw / 8);
+        height: 23px;
+        border-radius: 1px;
+        box-shadow: inset 0 0 1px 1px var(--ui-BG-Main),
+        0 0 1px 1px var(--ui-BG-Main);
+      }
+
+      .right-select, .left-select {
+        z-index: 102;
+        position: absolute;
+        background: #eeeeee !important;
+        width: 8px;
+        height: 8px;
+        box-shadow: inset 0 0 1px 1px var(--ui-BG-Main),
+        0 0 1px 1px var(--ui-BG-Main);
+      }
+
+      .left-select {
+        left: -4px;
+        top: -4px;
+      }
     }
   }
 
