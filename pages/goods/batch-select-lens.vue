@@ -87,14 +87,20 @@
 
   function selectRangeStart(e) {
     console.log(e);
+    state.scrollX = false;
+    state.scrollY = false;
     const touches = e.changedTouches[0];
     mousePosition.startX = touches.clientX;
     mousePosition.startY = touches.clientY;
   }
 
   function selectRangeMove(e) {
-    console.log(e);
     const touches = e.changedTouches[0];
+    const mouseX = touches.clientX;
+    const mouseY = touches.clientY;
+    const xCount = (mouseX - 10) / (cellWidth + 1);
+    const yCount = (mouseY - sheep.$platform.navbar) / (23 + 1);
+    console.log('xCount, yCount', xCount, yCount);
     rows.value?.forEach((row) => {
       row.cols.forEach((col) => {
         col.light = false;
@@ -103,9 +109,9 @@
     });
     // 遍历所有列，将选中的col.selected设为true
     rows.value?.forEach((row) => {
-      if (between(row.sph, [firstPosition.row, col.row.sph])) {
+      if (row.index < yCount) {
         row.cols.forEach((i) => {
-          if (between(i.cyl, [firstPosition.col, col.cyl]) && i.skuId) {
+          if (i.index < xCount) {
             i.selected = true;
           }
         });
@@ -114,6 +120,8 @@
   }
 
   function selectRangeEnd(e) {
+    state.scrollX = true;
+    state.scrollY = true;
     console.log(e);
   }
 
