@@ -20,13 +20,9 @@
     selectedCols: [],
     inputCount: 0,
   });
-  const selectedEdge = reactive({
-    leftOpacity: undefined,
-    topOpacity: undefined,
-  });
-  const mousePosition = reactive({
-    startX: 0,
-    startY: 0,
+  const shadowState = reactive({
+    fixedX: 0,
+    fixedY: 0,
   });
   const screenWidth = sheep.$platform.device.screenWidth;
   const cellWidth = screenWidth / 8;
@@ -47,8 +43,59 @@
       };
   });
 
-  const rightSelectStyle = computed(() => {
-    return { 'left': cellWidth - 4 + 'px', top: 19 + 'px' };
+  const slopingSideStyle = computed(() => {
+    const rad = Math.atan((23 + 1) / (cellWidth + 1));
+    const deg = Math.round(rad * (180 / Math.PI));
+    const width = Math.round(24 / Math.sin(rad));
+    const right = width - cellWidth + 1;
+    return { 'width': `${width}px`, 'transform': `rotate(${deg}deg)`, 'left': `${-1 * right}px` };
+  });
+
+  /**
+   * 计算选中的cell的上下左右index
+   * @param cols
+   */
+  function calcSelectedShadowPosition(cols) {
+    let position = {
+      left: Number.MAX_VALUE,
+      bottom: 0,
+      right: 0,
+      top: Number.MAX_VALUE,
+    };
+    cols.forEach((col) => {
+      position.right = Math.max(position.right, col.index);
+      position.left = Math.min(position.left, col.index);
+      position.bottom = Math.max(position.bottom, col.row.index);
+      position.top = Math.min(position.top, col.row.index);
+    });
+    return position;
+  }
+
+  /**
+   * 选中的col的坐标
+   */
+  const selectedShadowPosition = computed(() => {
+    return calcSelectedShadowPosition(state.selectedCols);
+  });
+
+  /**
+   * 计算框选阴影的定位和大小
+   * @param position
+   */
+  function calcShadowCoordinates(position) {
+    let style = {};
+    style.width = `${((position.right - position.left) + 1) * (cellWidth + 1)}px`;
+    style.height = `${((position.bottom - position.top) + 1) * (23 + 1)}px`;
+    style.left = `${position.left * (cellWidth + 1)}px`;
+    style.bottom = `${(rows.value.length - 1 - position.bottom) * (23 + 1)}px`;
+    return style;
+  }
+
+  /**
+   * 框选阴影的定位和大小
+   */
+  const selectedShadowStyle = computed(() => {
+    return calcShadowCoordinates(selectedShadowPosition.value);
   });
 
   const rows = ref([]);
@@ -65,16 +112,19 @@
       interval[1];
   };
 
+  /**
+   * 修改数量
+   * @param e
+   */
   function countChange(e) {
-    console.log(e);
     state.selectedCols.forEach(i => i.count = e);
   }
 
-  function selectRangeStart(e, col) {
+  function selectRangeStart(position) {
     state.scrollX = false;
     state.scrollY = false;
-    mousePosition.startX = col.index;
-    mousePosition.startY = col.row.index;
+    shadowState.fixedX = position.x;
+    shadowState.fixedY = position.y;
   }
 
   function selectRangeMove(e) {
@@ -86,43 +136,72 @@
       const mouseY = touches.clientY;
       const xCount = Math.floor((mouseX + res[0].scrollLeft - 10) / (cellWidth + 1));
       const yCount = Math.floor((mouseY + res[0].scrollTop - sheep.$platform.navbar - 10) / (23 + 1));
-      rows.value?.forEach((row) => {
-        row.cols.forEach((col) => {
-          col.light = false;
-          col.selected = false;
-        });
-      });
-      // 遍历所有列，将选中的col.selected设为true
-      rows.value?.forEach((row) => {
-        if (between(row.index, [mousePosition.startY, yCount - 1])) {
-          row.cols.forEach((col) => {
-            if (between(col.index, [mousePosition.startX, xCount - 1])) {
-              col.selected = true;
-            } else {
-              // 剩下的取消选中
-              col.light = false;
-              col.selected = false;
-            }
-          });
-        } else {
-          // 剩下的取消选中
-          row.cols.forEach((col) => {
-            col.light = false;
-            col.selected = false;
-          });
+      // 清空选中
+      state.selectedCols.splice(0, state.selectedCols.length);
+
+      // 设置选中col
+      let yRange = [shadowState.fixedY, yCount - 1].sort((a, b) => a - b);
+      let xRange = [shadowState.fixedX, xCount - 1].sort((a, b) => a - b);
+      for (let i = yRange[0]; i <= yRange[1]; i++) {
+        let row = rows.value[i];
+        for (let j = xRange[0]; j <= xRange[1]; j++) {
+          if (row.cols[j].skuId) {
+            state.selectedCols.push(row.cols[j]);
+          }
         }
-      });
-      console.log('xCount, yCount', mousePosition, xCount, yCount);
+      }
+
+      // console.log('selectRangeMove', shadowState, xRange, yRange);
     });
   }
 
   function selectRangeEnd(e) {
     state.scrollX = true;
     state.scrollY = true;
+
+    // 如果只选中了一个单元格，则回显数量
+    if (state.selectedCols.length === 1) {
+      state.inputCount = state.selectedCols[0].count;
+    }
+    // console.log('selectRangeEnd', state.selectedCols, selectedShadowPosition.value, selectedShadowStyle.value);
   }
 
-  function onAddCart() {
+  const selectLens = (col) => {
+    state.selectedCols.splice(0, state.selectedCols.length);
+    // 清除输入框数据
+    state.inputCount = 0;
 
+    // 如果是被禁用的单元格，则不执行后面的逻辑
+    if (!col.skuId) return;
+
+    // 添加到被选中的数组中
+    state.selectedCols.push(col);
+
+    // 如果只选中了一个单元格，则回显数量
+    if (state.selectedCols.length === 1) {
+      state.inputCount = state.selectedCols[0].count;
+    }
+    // console.log('selectLens', selectedShadowPosition.value, selectedShadowStyle.value);
+  };
+
+  function onAddCart() {
+    let lensList = [];
+    rows.value.forEach((row) => {
+      row.cols.forEach((col) => {
+        // 找出每一行有数量的col，转换格式
+        if (col.count) {
+          lensList.push({
+            id: col.skuId,
+            sph: col.row.sph,
+            cyl: col.cyl,
+            add: col.add,
+            goods_num: col.count,
+            categoryId: col.categoryId,
+          });
+        }
+      });
+    });
+    sheep.$store('cart').add(...lensList);
   }
 
   function onBuy() {
@@ -158,42 +237,6 @@
       data: JSON.stringify(data),
     });
   }
-
-  const selectLens = (row, col) => {
-    // 清空之前的高亮单元格
-    rows.value.forEach((item) => {
-      item.cols.forEach((col) => {
-        col.light = false;
-        col.selected = false;
-      });
-    });
-    state.selectedCols.splice(0, state.selectedCols.length);
-    // 清除输入框数据
-    state.inputCount = 0;
-
-    // 如果是被禁用的单元格，则不执行后面的逻辑
-    if (!col.skuId) return;
-
-    // 设置当前单元格选中状态
-    col.selected = true;
-    state.selectedCols.push(col);
-    // 设置高亮单元格
-    row.cols.forEach((item, index) => {
-      if (index < col.index) {
-        item.light = true;
-      }
-    });
-    rows.value.forEach((item, index) => {
-      if (index < row.index) {
-        item.cols[col.index].light = true;
-      }
-    });
-
-    // 如果只选中了一个单元格，则回显数量
-    if (state.selectedCols.length === 1) {
-      state.inputCount = state.selectedCols[0].count;
-    }
-  };
 
   /**
    * 获取光度价格信息
@@ -319,7 +362,7 @@
                 <view class="lens-item" style="position: relative">
                   <!--(1, 1) 用于展示纵横（交叉）表头-->
                   <view style="display: inline; position:relative; top: 4px">SPH</view>
-                  <view class="sloping-side" />
+                  <view class="sloping-side" :style="slopingSideStyle" />
                   <view style="display: inline; position:relative; top: -4px">
                     {{ isNormal ? 'CYL' : 'ADD' }}
                   </view>
@@ -339,24 +382,23 @@
                 <view class="tr" v-for="row in rows" :key="row.sph">
                   <view class="td lens-item"
                         :class="{
-                          'light-item': col.light,
-                          'disabled-item': !col.skuId,
-                          'selected-item': col.selected,
+                          'disabled-item': !col.skuId
                         }"
                         v-for="col in row.cols"
-                        @tap="selectLens(row, col)"
+                        @tap="selectLens(col)"
                         :key="col.index">
-                    {{ col.index }}
-                    <!--                    {{ col.count ? col.count : '' }}-->
+                    <!--                                        {{ col.index + ',' + row.index }}-->
+                    {{ col.count ? col.count : '' }}
                   </view>
                 </view>
-                <view class="selected-shadow" v-show="state.selectedCols.length > 0">
-                  <view class="left-select" @touchstart="(e) => selectRangeStart(e, col)"
+                <view class="selected-shadow" :style="selectedShadowStyle" v-show="state.selectedCols.length > 0">
+                  <view class="left-select"
+                        @touchstart="selectRangeStart({x:selectedShadowPosition.right, y:selectedShadowPosition.bottom})"
                         @touchmove="selectRangeMove" @touchend="selectRangeEnd"></view>
                   <view class="center-border"></view>
-                  <view class="right-select" :style="rightSelectStyle"
-                        @touchstart="selectRangeStart"
-                        @tap="selectRangeMove" @touchend="selectRangeEnd"></view>
+                  <view class="right-select"
+                        @touchstart="selectRangeStart({x:selectedShadowPosition.left, y:selectedShadowPosition.top})"
+                        @touchmove="selectRangeMove" @touchend="selectRangeEnd"></view>
                 </view>
               </view>
             </view>
@@ -420,13 +462,9 @@
   }
 
   .sloping-side {
-    height: 0;
     border-bottom: 1px solid #bbbbbb;
-    width: calc(100vw / 8 + 6px);
     position: absolute;
-    top: 12px;
-    left: -3px;
-    transform: rotate(-148deg);
+    transform-origin: bottom right;
   }
 
   .x-head {
@@ -473,15 +511,13 @@
     background: #d5d7da !important;
   }
 
-  .selected-item::after {
-  }
-
   .lens-table {
     font-size: 18rpx;
     max-height: calc(60vh);
   }
 
   .table-body {
+    position: relative;
     display: inline-flex;
     flex-direction: column;
 
@@ -491,23 +527,26 @@
     }
 
     .selected-shadow {
-      position: relative;
+      pointer-events: none;
+      position: absolute;
 
       .center-border {
+        pointer-events: none;
         z-index: 96;
         content: "";
         position: absolute;
-        left: -1px;
-        top: -1px;
-        background: rgba(3, 3, 3, 0.3) !important;
-        width: calc(100vw / 8);
-        height: 23px;
+        left: 0;
+        top: 0;
+        background: rgba(5, 5, 5, 0.2) !important;
+        width: 100%;
+        height: 100%;
         border-radius: 1px;
         box-shadow: inset 0 0 1px 1px var(--ui-BG-Main),
         0 0 1px 1px var(--ui-BG-Main);
       }
 
       .right-select, .left-select {
+        pointer-events: auto;
         z-index: 102;
         position: absolute;
         background: #eeeeee !important;
@@ -517,9 +556,23 @@
         0 0 1px 1px var(--ui-BG-Main);
       }
 
+      .left-select::after, .right-select::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        bottom: -10px;
+        left: -10px;
+      }
+
       .left-select {
         left: -4px;
         top: -4px;
+      }
+
+      .right-select {
+        left: calc(100% - 4px);
+        top: calc(100% - 4px);
       }
     }
   }

@@ -11,7 +11,7 @@
                   {{ index + 1 < 10 ? '0' + (index + 1) : index + 1 }}
                 </view>
               </view>
-              <view class="triangle"> </view>
+              <view class="triangle"></view>
             </view>
             <view class="title ss-m-t-36 ss-m-b-36">
               {{ item.title }}
@@ -48,15 +48,13 @@
       state.loading = false;
     }
   }
+
   onLoad(() => {
     // TODO 芋艿：目前简单做，使用营销文章，作为 faq
-    if (true) {
-      sheep.$router.go('/pages/public/richtext', {
-        title: '常见问题',
-      })
-      return;
-    }
-    getFaqList();
+    sheep.$router.go('/pages/public/richtext', {
+      title: '常见问题',
+    });
+    // getFaqList();
   });
 </script>
 
