@@ -84,7 +84,7 @@
 
           </view>
           <view class="option-right ss-flex ss-col-center ss-row-center">
-            <button class="ss-reset-button buy-btn ui-Shadow-Main" :class="{'disable-btn': !complete}" @tap="toDetail">
+            <button class="ss-reset-button buy-btn ui-Shadow-Main" :disabled="!complete" :class="{'disable-btn': !complete}" @tap="toDetail">
               {{ !complete ? '暂无匹配商品' : '查看详情' }}
             </button>
           </view>

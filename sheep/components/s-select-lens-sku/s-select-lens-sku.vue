@@ -102,6 +102,7 @@
           </view>
         </scroll-view>
 
+        <!-- 底部 -->
         <view class="option-box ss-flex ss-col-center ss-flex ss-col-center ss-row-center">
           <button class="ss-reset-button add-btn ui-Shadow-Main" @tap="addSku">+</button>
         </view>
@@ -387,12 +388,15 @@
   }
 
   .option-box {
-    padding: 10rpx 0;
+    position: absolute;
+    top: 530rpx;
+    left: 0;
+    width: 100%;
 
     .add-btn {
-      width: 60rpx;
-      height: 60rpx;
-      border-radius: 30rpx;
+      width: 68rpx;
+      height: 68rpx;
+      border-radius: 34rpx;
       background-color: var(--ui-BG-Main-light);
       color: var(--ui-BG-Main);
     }
@@ -401,7 +405,7 @@
   .ss-modal-box {
     border-radius: 30rpx 30rpx 0 0;
     max-height: 1000rpx;
-    min-height: 700rpx;
+    min-height: 1000rpx;
 
     .modal-header {
       position: relative;
@@ -418,7 +422,7 @@
       }
 
       .goods-title {
-        font-size: 28rpx;
+        font-size: 30rpx;
         font-weight: 500;
         line-height: 42rpx;
       }
@@ -430,6 +434,7 @@
     }
 
     .modal-content {
+      position: relative;
       padding: 0 20rpx;
 
       .modal-content-scroll {
@@ -480,7 +485,7 @@
         }
 
         .sku-item {
-          font-size: 12px;
+          font-size: 15px;
 
           .remove-btn {
             margin-left: 10px;
