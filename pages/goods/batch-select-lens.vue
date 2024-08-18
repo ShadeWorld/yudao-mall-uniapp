@@ -201,7 +201,11 @@
         }
       });
     });
-    sheep.$store('cart').add(...lensList);
+    if (lensList.length === 0) {
+      sheep.$helper.toast('请选择光度并输入数量后再加入购物车');
+    } else {
+      sheep.$store('cart').add(...lensList);
+    }
   }
 
   function onBuy() {
@@ -233,9 +237,13 @@
     });
     data.deliveryType = 1;
     data.pointStatus = false;
-    sheep.$router.go('/pages/order/confirm', {
-      data: JSON.stringify(data),
-    });
+    if (data.items.length === 0) {
+      sheep.$helper.toast('请选择光度并输入数量后再购买');
+    } else {
+      sheep.$router.go('/pages/order/confirm', {
+        data: JSON.stringify(data),
+      });
+    }
   }
 
   /**
