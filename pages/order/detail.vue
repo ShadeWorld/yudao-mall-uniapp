@@ -19,7 +19,7 @@
             state.orderInfo.status_code == 'nocomment'
           "
           class="state-img"
-          :src="sheep.$url.static('/static/img/shop/order/order_loading.png')"
+          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/9369e0448d48d8394915883da7f0c941973726c999ae6ff9c58c41c73624248e.png')"
         >
         </image>
         <image
@@ -28,19 +28,19 @@
             state.orderInfo.status_code == 'refund_agree'
           "
           class="state-img"
-          :src="sheep.$url.static('/static/img/shop/order/order_success.png')"
+          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/bb195f2ef7f108392173ad3d713c2ba4f7005ad83ab924a5301fa80af5ae8e5c.png')"
         >
         </image>
         <image
           v-if="state.orderInfo.status_code == 'cancel' || state.orderInfo.status_code == 'closed'"
           class="state-img"
-          :src="sheep.$url.static('/static/img/shop/order/order_close.png')"
+          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/5822ffdd37a73454b7b47c9b5d836ee482100b1c03b410d751f25932cb6491aa.png')"
         >
         </image>
         <image
           v-if="state.orderInfo.status_code == 'noget'"
           class="state-img"
-          :src="sheep.$url.static('/static/img/shop/order/order_express.png')"
+          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/bdfb73836dd10b833a76953f7e408b21e393dacfb11848c0cf5dae85b23756de.png')"
         >
         </image>
         <view class="ss-font-30">{{ formatOrderStatus(state.orderInfo) }}</view>
@@ -128,6 +128,15 @@
       >
         <text class="title">已退款</text>
         <text class="detail all-price">￥{{ fen2yuan(state.orderInfo.refundPrice) }}</text>
+      </view>
+    </view>
+
+    <!-- 工艺信息 -->
+    <view class="craft-box ss-flex flex-wrap ss-col-center ss-row-left ss-p-x-20 ss-p-t-10 ss-p-b-20 bg-white ss-r-10 ss-m-b-10">
+      <view class="ss-m-r-10 ss-m-t-10" v-for="craft in state.orderInfo.craftList" :key="craft.craftId">
+        <uni-tag :text="`${craft.craftName} ￥${fen2yuan(craft.price)}`"
+                 custom-style="box-shadow: var(--ui-Main-box-shadow) !important; background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient)); color: #fff; border: none !important; margin-right: 10rpx; display: inline-block;">
+        </uni-tag>
       </view>
     </view>
 
@@ -552,6 +561,13 @@
     font-size: 22rpx;
     font-weight: 400;
     color: rgba(51, 51, 51, 1);
+  }
+
+  // 工艺信息
+  .craft-box {
+    background: #fff;
+    border-radius: 10rpx;
+    margin: 0 20rpx 20rpx 20rpx;
   }
 
   // 订单价格信息
