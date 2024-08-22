@@ -5,6 +5,7 @@
   import Base64 from 'base-64';
   import SuTabbar from '@/sheep/ui/su-tabbar/su-tabbar.vue';
   import sheep from '@/sheep';
+  import SBatchRangeInput from '@/sheep/components/s-batch-range-input/s-batch-range-input.vue';
 
   const state = reactive({
     goodsInfo: undefined,
@@ -19,6 +20,7 @@
     scrollY: true,
     selectedCols: [],
     inputCount: 0,
+    showRangeInput: false,
   });
   const shadowState = reactive({
     fixedX: 0,
@@ -87,7 +89,7 @@
     style.width = `${((position.right - position.left) + 1) * (cellWidth + 1)}px`;
     style.height = `${((position.bottom - position.top) + 1) * (23 + 1)}px`;
     style.left = `${position.left * (cellWidth + 1)}px`;
-    style.bottom = `${(rows.value.length - 1 - position.bottom) * (23 + 1)}px`;
+    style.top = `${position.top * 24}px`;
     return style;
   }
 
@@ -114,10 +116,10 @@
 
   /**
    * 修改数量
-   * @param e
+   * @param count 数量
    */
-  function countChange(e) {
-    state.selectedCols.forEach(i => i.count = e);
+  function countChange(count) {
+    state.selectedCols.forEach(i => i.count = count);
   }
 
   function selectRangeStart(position) {
@@ -415,13 +417,19 @@
         <!-- 底部 -->
         <su-fixed bottom :val="48" placeholder :isInset="false">
           <view class="input-section ss-flex ss-col-center ss-row-between ss-p-x-30 border-bottom">
-            <view class="label-wrap">
-              输入数量：
+            <view>
+              <button class="ss-reset-button range-btn ss-r-40 ui-BG-Main-Gradient" @tap="state.showRangeInput = true">区间选择</button>
             </view>
-            <su-number-box :min="0" :step="1" @change="countChange" v-model="state.inputCount"
-                           :disabled="state.selectedCols.length === 0" />
+            <view class="ss-flex ss-col-center ss-row-between">
+              <view class="label-wrap">
+                输入数量：
+              </view>
+              <su-number-box :min="0" :step="1" @change="countChange" v-model="state.inputCount"
+                             :disabled="state.selectedCols.length === 0" />
+            </view>
           </view>
         </su-fixed>
+        <s-batch-range-input v-model="rows" :show="state.showRangeInput" :batch-state="state" @close="state.showRangeInput = false" />
       </view>
       <su-tabbar
         :fixed="true"
@@ -449,6 +457,13 @@
   .input-section {
     height: 100rpx;
     background-color: #fff;
+
+    .range-btn {
+      width: 200rpx;
+      height: 70rpx;
+      font-size: 28rpx;
+      font-weight: 500;
+    }
 
     .label-wrap {
     }

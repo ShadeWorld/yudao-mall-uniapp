@@ -131,11 +131,9 @@
   import detailContentCard from './components/detail/detail-content-card.vue';
   import detailActivityTip from './components/detail/detail-activity-tip.vue';
   import {
-    cloneDeep,
     isEmpty,
   } from 'lodash';
   import SpuApi from '@/sheep/api/product/spu';
-  import SBatchSelectLensSku from '@/pages/goods/batch-select-lens.vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
   import Base64 from 'base-64';
 
