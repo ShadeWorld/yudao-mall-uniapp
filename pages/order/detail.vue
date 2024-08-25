@@ -246,6 +246,7 @@
   } from '@/sheep/hooks/useGoods';
   import OrderApi from '@/sheep/api/trade/order';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
+  import { formatLens } from '@/sheep/util';
 
   const statusBarHeight = sheep.$platform.device.statusBarHeight * 2;
   const headerBg = sheep.$url.css('/static/img/shop/order/order_bg.png');
@@ -271,7 +272,7 @@
   // 商品属性文案
   function skuTextContent(item) {
     if (item.hasOwnProperty('sph')) {
-      let content = '球镜:' + item.sph.toFixed(2) + ' 柱镜:' + item.cyl.toFixed(2) + ' 加光:' + item.add.toFixed(2);
+      let content = '球镜:' + formatLens(item.sph) + ' 柱镜:' + formatLens(item.cyl) + ' 加光:' + formatLens(item.add);
       if (item.leftOrRight) {
         content += ` ${item.leftOrRight === 1 ? '左眼' : '右眼'}`
       }

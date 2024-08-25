@@ -75,6 +75,7 @@
   import { computed, reactive } from 'vue';
   import { fen2yuan } from '@/sheep/hooks/useGoods';
   import { cloneDeep } from 'lodash';
+  import { formatLens } from '@/sheep/util';
 
   const sys_navBar = sheep.$platform.navbar;
   const cart = sheep.$store('cart');
@@ -90,7 +91,7 @@
 
   function cartItemContext(item) {
     if (item.cartLens) {
-      let content = '球镜:' + item.cartLens.sph.toFixed(2) + ' 柱镜:' + item.cartLens.cyl.toFixed(2) + ' 加光:' + item.cartLens.add.toFixed(2);
+      let content = '球镜:' + formatLens(item.cartLens.sph) + ' 柱镜:' + formatLens(item.cartLens.cyl) + ' 加光:' + formatLens(item.cartLens.add);
       if (item.cartLens.leftOrRight) {
         content += ` ${item.cartLens.leftOrRight === 1 ? '左眼' : '右眼'}`
       }

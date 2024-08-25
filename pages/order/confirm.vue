@@ -196,6 +196,7 @@
   import SDeliverySelect from '@/sheep/components/s-delivery-select/s-delivery-select.vue';
   import SLayout from '@/sheep/components/s-layout/s-layout.vue';
   import SGoodsItem from '@/sheep/components/s-goods-item/s-goods-item.vue';
+  import { formatLens } from '@/sheep/util';
 
   const state = reactive({
     orderPayload: {},
@@ -213,7 +214,7 @@
 
   function skuTextContent(item) {
     if (item.hasOwnProperty('sph')) {
-      let content = '球镜:' + item.sph.toFixed(2) + ' 柱镜:' + item.cyl.toFixed(2) + ' 加光:' + item.add.toFixed(2);
+      let content = '球镜:' + formatLens(item.sph) + ' 柱镜:' + formatLens(item.cyl) + ' 加光:' + formatLens(item.add);
       if (item.leftOrRight) {
         content += ` ${item.leftOrRight === 1 ? '左眼' : '右眼'}`
       }

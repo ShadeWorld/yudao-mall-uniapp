@@ -6,6 +6,7 @@
   import SuTabbar from '@/sheep/ui/su-tabbar/su-tabbar.vue';
   import sheep from '@/sheep';
   import SBatchRangeInput from '@/sheep/components/s-batch-range-input/s-batch-range-input.vue';
+  import { formatLens } from '@/sheep/util';
 
   const state = reactive({
     goodsInfo: undefined,
@@ -380,12 +381,12 @@
               </view>
               <view class="x-head">
                 <view class="lens-item" v-for="col in colList" :key="col">
-                  {{ col.toFixed(2) }}
+                  {{ formatLens(col) }}
                 </view>
               </view>
               <view class="y-head">
                 <view class="lens-item" v-for="row in rows" :key="row.sph">
-                  {{ row.sph.toFixed(2) }}
+                  {{ formatLens(row.sph) }}
                 </view>
               </view>
               <view class="table-body" :style="bodyWidth">

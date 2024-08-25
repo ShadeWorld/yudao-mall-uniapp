@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 /**
  * 将一个整数转换为分数保留两位小数
@@ -6,10 +6,10 @@ import dayjs from "dayjs";
  * @return {number} 分数
  */
 export const formatToFraction = (num) => {
-  if (typeof num === 'undefined') return 0
-  const parsedNumber = typeof num === 'string' ? parseFloat(num) : num
-  return parseFloat((parsedNumber / 100).toFixed(2))
-}
+  if (typeof num === 'undefined') return 0;
+  const parsedNumber = typeof num === 'string' ? parseFloat(num) : num;
+  return parseFloat((parsedNumber / 100).toFixed(2));
+};
 
 /**
  * 将一个数转换为 1.00 这样
@@ -19,26 +19,26 @@ export const formatToFraction = (num) => {
  * @return {string} 分数
  */
 export const floatToFixed2 = (num) => {
-  let str = '0.00'
+  let str = '0.00';
   if (typeof num === 'undefined') {
-    return str
+    return str;
   }
-  const f = formatToFraction(num)
-  const decimalPart = f.toString().split('.')[1]
-  const len = decimalPart ? decimalPart.length : 0
+  const f = formatToFraction(num);
+  const decimalPart = f.toString().split('.')[1];
+  const len = decimalPart ? decimalPart.length : 0;
   switch (len) {
     case 0:
-      str = f.toString() + '.00'
-      break
+      str = f.toString() + '.00';
+      break;
     case 1:
-      str = f.toString() + '.0'
-      break
+      str = f.toString() + '.0';
+      break;
     case 2:
-      str = f.toString()
-      break
+      str = f.toString();
+      break;
   }
-  return str
-}
+  return str;
+};
 
 /**
  * 将一个分数转换为整数
@@ -47,11 +47,11 @@ export const floatToFixed2 = (num) => {
  * @return {number} 整数
  */
 export const convertToInteger = (num) => {
-  if (typeof num === 'undefined') return 0
-  const parsedNumber = typeof num === 'string' ? parseFloat(num) : num
+  if (typeof num === 'undefined') return 0;
+  const parsedNumber = typeof num === 'string' ? parseFloat(num) : num;
   // TODO 分转元后还有小数则四舍五入
-  return Math.round(parsedNumber * 100)
-}
+  return Math.round(parsedNumber * 100);
+};
 
 /**
  * 时间日期转换
@@ -67,13 +67,13 @@ export const convertToInteger = (num) => {
 export function formatDate(date, format) {
   // 日期不存在，则返回空
   if (!date) {
-    return ''
+    return '';
   }
   // 日期存在，则进行格式化
   if (format === undefined) {
-    format = 'YYYY-MM-DD HH:mm:ss'
+    format = 'YYYY-MM-DD HH:mm:ss';
   }
-  return dayjs(date).format(format)
+  return dayjs(date).format(format);
 }
 
 /**
@@ -87,12 +87,12 @@ export function formatDate(date, format) {
  */
 export function handleTree(data, id = 'id', parentId = 'parentId', children = 'children', rootId = 0) {
   // 对源数据深度克隆
-  const cloneData = JSON.parse(JSON.stringify(data))
+  const cloneData = JSON.parse(JSON.stringify(data));
   // 循环所有项
   const treeData = cloneData.filter(father => {
     let branchArr = cloneData.filter(child => {
       //返回每一项的子级数组
-      return father[id] === child[parentId]
+      return father[id] === child[parentId];
     });
     branchArr.length > 0 ? father.children = branchArr : '';
     //返回第一层
@@ -112,4 +112,12 @@ export function resetPagination(pagination) {
   pagination.list = [];
   pagination.total = 0;
   pagination.pageNo = 1;
+}
+
+export function formatLens(value) {
+  if (value) {
+    return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2);
+  } else {
+    return '0.00';
+  }
 }

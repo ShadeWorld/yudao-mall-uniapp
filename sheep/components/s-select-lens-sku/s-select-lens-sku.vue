@@ -153,6 +153,14 @@
     },
   });
 
+  const formatLens = (value) => {
+    if (value) {
+      return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2)
+    } else {
+      return '0.00'
+    }
+  }
+
   const showAxis = computed(() => {
     return props.goodsInfo.skus.findIndex(i => {
       return (i.skuLens.minCyl !== 0 || i.skuLens.maxCyl !== 0) && (i.skuLens.minAdd !== 0 || i.skuLens.maxAdd !== 0);
@@ -190,7 +198,7 @@
             return between(i, [lens.minSph, lens.maxSph]) && lens.skipSph.indexOf(i) === -1;
           });
           if (index > -1) {
-            state.avlDegrees.push({ name: i.toFixed(2), value: i });
+            state.avlDegrees.push({ name: formatLens(i), value: i });
           }
         }
         break;
@@ -210,7 +218,7 @@
               && (between(union, [lens.maxUnion, lens.minUnion]) || (lens.maxUnion === 0 && lens.minUnion === 0));
           });
           if (index > -1) {
-            state.avlDegrees.push({ name: i.toFixed(2), value: i });
+            state.avlDegrees.push({ name: formatLens(i), value: i });
           }
         }
         break;
@@ -228,7 +236,7 @@
               && lens.skipAdd.indexOf(i) === -1 && lens.skipSph.indexOf(sph) === -1;
           });
           if (index > -1) {
-            state.avlDegrees.push({ name: i.toFixed(2), value: i });
+            state.avlDegrees.push({ name: formatLens(i), value: i });
           }
         }
         break;
