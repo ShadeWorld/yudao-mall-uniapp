@@ -132,7 +132,7 @@
     </view>
 
     <!-- 工艺信息 -->
-    <view class="craft-box ss-flex flex-wrap ss-col-center ss-row-left ss-p-x-20 ss-p-t-10 ss-p-b-20 bg-white ss-r-10 ss-m-b-10">
+    <view class="craft-box ss-flex flex-wrap ss-col-center ss-row-left ss-p-x-20 ss-p-t-10 ss-p-b-20 bg-white ss-r-10 ss-m-b-10" v-if="state.orderInfo.craftList?.length > 0">
       <view class="ss-m-r-10 ss-m-t-10" v-for="craft in state.orderInfo.craftList" :key="craft.craftId">
         <uni-tag :text="`${craft.craftName} ￥${fen2yuan(craft.price)}`"
                  custom-style="box-shadow: var(--ui-Main-box-shadow) !important; background: linear-gradient(90deg, var(--ui-BG-Main), var(--ui-BG-Main-gradient)); color: #fff; border: none !important; margin-right: 10rpx; display: inline-block;">

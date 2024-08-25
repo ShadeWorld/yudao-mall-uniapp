@@ -51,11 +51,11 @@
 
       <!-- TODO 芋艿：订阅 -->
       <!-- #ifdef MP -->
-      <view class="subscribe-box ss-flex ss-m-t-44">
-        <image class="subscribe-img" :src="sheep.$url.static('/static/img/shop/order/cargo.png')" />
-        <view class="subscribe-title ss-m-r-48 ss-m-l-16">获取实时发货信息与订单状态</view>
-        <view class="subscribe-start" @tap="subscribeMessage">立即订阅</view>
-      </view>
+<!--      <view class="subscribe-box ss-flex ss-m-t-44">-->
+<!--        <image class="subscribe-img" :src="sheep.$url.static('/static/img/shop/order/cargo.png')" />-->
+<!--        <view class="subscribe-title ss-m-r-48 ss-m-l-16">获取实时发货信息与订单状态</view>-->
+<!--        <view class="subscribe-start" @tap="subscribeMessage">立即订阅</view>-->
+<!--      </view>-->
       <!-- #endif -->
     </view>
   </s-layout>
