@@ -57,20 +57,19 @@ const _go = (
     return;
   }
 
+  url = page;
+  if (!isEmpty(query)) {
+    url += `?${query}`;
+  }
 
   let auth = nextRoute.meta?.auth
   // 页面登录拦截
   if (!$store('user').isLogin && (auth === undefined || auth)) {
     uni.redirectTo({
-      url: '/pages/user/login'
+      url: `/pages/user/login?redirectTo=${encodeURIComponent(url)}`,
     });
     // showAuthModal();
     return;
-  }
-
-  url = page;
-  if (!isEmpty(query)) {
-    url += `?${query}`;
   }
 
   // 跳转底部导航

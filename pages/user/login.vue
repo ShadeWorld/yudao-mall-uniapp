@@ -1,6 +1,11 @@
 <script setup>
   import sheep from '@/sheep';
-  import { computed } from 'vue';
+  import { computed, reactive } from 'vue';
+  import { onLoad } from '@dcloudio/uni-app';
+
+  const state = reactive({
+    redirectTo: '/pages/index/index',
+  })
 
   // 微信小程序的“手机号快速验证”：https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhoneNumber.html
   const getPhoneNumber = async (e) => {
@@ -12,13 +17,19 @@
     let result = await sheep.$platform.useProvider().mobileLogin(e.detail);
     if (result) {
       uni.switchTab({
-        url: '/pages/index/index',
+        url: state.redirectTo,
       });
     }
   };
 
   const { safeArea } = sheep.$platform.device;
   const pageHeight = computed(() => safeArea.height);
+
+  onLoad(async (options) => {
+    if (options.redirectTo) {
+      state.redirectTo = options.redirectTo;
+    }
+  });
 </script>
 
 <template>
