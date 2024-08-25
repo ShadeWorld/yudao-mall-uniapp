@@ -5,7 +5,7 @@
 
   const state = reactive({
     redirectTo: '/pages/index/index',
-  })
+  });
 
   // 微信小程序的“手机号快速验证”：https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/getPhoneNumber.html
   const getPhoneNumber = async (e) => {
@@ -16,9 +16,7 @@
     console.log(e.detail);
     let result = await sheep.$platform.useProvider().mobileLogin(e.detail);
     if (result) {
-      uni.switchTab({
-        url: state.redirectTo,
-      });
+      sheep.$router.go(state.redirectTo);
     }
   };
 
@@ -27,7 +25,7 @@
 
   onLoad(async (options) => {
     if (options.redirectTo) {
-      state.redirectTo = options.redirectTo;
+      state.redirectTo = decodeURIComponent(options.redirectTo);
     }
   });
 </script>
@@ -65,7 +63,7 @@
         color: white;
       }
 
-      .register-btn{
+      .register-btn {
         margin-top: 20px;
         width: 412rpx;
         height: 72rpx;
