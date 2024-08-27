@@ -120,6 +120,9 @@
     let goods_list = [];
     state.selectedList = state.list.filter((item) => state.selectedIds.includes(item.id));
     state.selectedList.map((item) => {
+      if (!item.count) {
+        return;
+      }
       let value = items.find((exists) => exists.skuId === item.sku.id);
       if (!value) {
         value = {
