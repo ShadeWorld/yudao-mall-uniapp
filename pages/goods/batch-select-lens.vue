@@ -516,15 +516,27 @@
   }
 
   .lens-item {
-    border-right: 1px solid #bbbbbb;
-    border-bottom: 1px solid #bbbbbb;
+    //border-right: 1px solid #bbbbbb;
+    //border-bottom: 1px solid #bbbbbb;
     flex-shrink: 0;
-    width: calc(100vw / 8);
+    width: calc((100vw / 8) + 1px);
     text-align: center;
-    height: 23px;
-    line-height: 23px;
+    height: 24px;
+    line-height: 24px;
     white-space: nowrap;
     position: relative;
+  }
+
+  .lens-item::after {
+    z-index: 95 !important;
+    position: absolute;
+    border-right: 1px solid #bbbbbb;
+    border-bottom: 1px solid #bbbbbb;
+    content: '';
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
   }
 
   .light-item {
