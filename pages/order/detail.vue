@@ -93,6 +93,25 @@
       </view>
     </view>
 
+    <!-- 发货记录 -->
+    <view class="notice-box" v-if="state.orderInfo.deliveryList.length">
+      <view class="notice-box__content" v-for="item in state.orderInfo.deliveryList" :key="item.id">
+        <view class="notice-item--center">
+          <view class="ss-flex ss-flex-1">
+            <text class="title">运单号：</text>
+            <text class="detail">{{ item.logisticsNo }}</text>
+          </view>
+          <button class="ss-reset-button copy-btn" @tap="onCopy">复制</button>
+        </view>
+        <view class="notice-item">
+          <text class="title">发货时间：</text>
+          <text class="detail">
+            {{ sheep.$helper.timeFormat(item.createTime, 'yyyy-mm-dd hh:MM:ss') }}
+          </text>
+        </view>
+      </view>
+    </view>
+
     <!-- 价格信息 -->
     <view class="order-price-box">
       <view class="notice-item ss-flex ss-row-between">
@@ -259,7 +278,7 @@
 
   // 复制
   const onCopy = () => {
-    sheep.$helper.copyText(state.orderInfo.sn);
+    sheep.$helper.copyText(state.orderInfo.no);
   };
 
   // 去支付

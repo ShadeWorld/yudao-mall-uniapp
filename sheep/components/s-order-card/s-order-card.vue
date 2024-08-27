@@ -44,14 +44,14 @@
       type: 'undelivered',
       count: 'undeliveredCount',
     },
-    {
-      title: '待收货',
-      value: '3',
-      icon: 'https://www.zhaomingyanjing.store/glass-manage/e33a87393690c7bf6b8a45a746361c22ccbb95d233b539d3f5d6f03a129bb959.png',
-      path: '/pages/order/list',
-      type: 'noget',
-      count: 'deliveredCount',
-    },
+    // {
+    //   title: '待收货',
+    //   value: '3',
+    //   icon: 'https://www.zhaomingyanjing.store/glass-manage/e33a87393690c7bf6b8a45a746361c22ccbb95d233b539d3f5d6f03a129bb959.png',
+    //   path: '/pages/order/list',
+    //   type: 'noget',
+    //   count: 'deliveredCount',
+    // },
     // {
     //   title: '待评价',
     //   value: '4',
