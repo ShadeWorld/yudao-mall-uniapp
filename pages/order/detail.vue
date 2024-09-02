@@ -19,7 +19,7 @@
             state.orderInfo.status_code == 'nocomment'
           "
           class="state-img"
-          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/9369e0448d48d8394915883da7f0c941973726c999ae6ff9c58c41c73624248e.png')"
+          :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/9369e0448d48d8394915883da7f0c941973726c999ae6ff9c58c41c73624248e.png')"
         >
         </image>
         <image
@@ -28,19 +28,19 @@
             state.orderInfo.status_code == 'refund_agree'
           "
           class="state-img"
-          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/bb195f2ef7f108392173ad3d713c2ba4f7005ad83ab924a5301fa80af5ae8e5c.png')"
+          :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/bb195f2ef7f108392173ad3d713c2ba4f7005ad83ab924a5301fa80af5ae8e5c.png')"
         >
         </image>
         <image
           v-if="state.orderInfo.status_code == 'cancel' || state.orderInfo.status_code == 'closed'"
           class="state-img"
-          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/5822ffdd37a73454b7b47c9b5d836ee482100b1c03b410d751f25932cb6491aa.png')"
+          :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/5822ffdd37a73454b7b47c9b5d836ee482100b1c03b410d751f25932cb6491aa.png')"
         >
         </image>
         <image
           v-if="state.orderInfo.status_code == 'noget'"
           class="state-img"
-          :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/bdfb73836dd10b833a76953f7e408b21e393dacfb11848c0cf5dae85b23756de.png')"
+          :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/bdfb73836dd10b833a76953f7e408b21e393dacfb11848c0cf5dae85b23756de.png')"
         >
         </image>
         <view class="ss-font-30">{{ formatOrderStatus(state.orderInfo) }}</view>

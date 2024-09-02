@@ -11,7 +11,7 @@
           <block v-if="modelValue.favorite">
             <image
               class="item-icon"
-              :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/30dd54450cbd8f7561cefef361cb92e058bb8077edbe149bc79ff161f0135fda.gif')"
+              :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/30dd54450cbd8f7561cefef361cb92e058bb8077edbe149bc79ff161f0135fda.gif')"
               mode="aspectFit"
             />
             <view class="item-title">已收藏</view>
@@ -19,7 +19,7 @@
           <block v-else>
             <image
               class="item-icon"
-              :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/312f9226f6eaf932b8832e60e5ff34a565d81b029d9a1f25f10e9dc5ce03992d.png')"
+              :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/312f9226f6eaf932b8832e60e5ff34a565d81b029d9a1f25f10e9dc5ce03992d.png')"
               mode="aspectFit"
             />
             <view class="item-title">收藏</view>
@@ -32,7 +32,7 @@
         >
           <image
             class="item-icon"
-            :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/5bc96dd5eaa4dce68151d05b78dbf5c29f8d3042fc978ceab59f98bd52e195f1.png')"
+            :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/5bc96dd5eaa4dce68151d05b78dbf5c29f8d3042fc978ceab59f98bd52e195f1.png')"
             mode="aspectFit"
           />
           <view class="item-title">购物车</view>
@@ -44,7 +44,7 @@
         >
           <image
             class="item-icon"
-            :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/a6694bd053cb76237824447c2caacb0ddb0a21d6d891d9670b0b1eb0a6168ea2.png')"
+            :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/a6694bd053cb76237824447c2caacb0ddb0a21d6d891d9670b0b1eb0a6168ea2.png')"
             mode="aspectFit"
           />
           <view class="item-title">分享</view>

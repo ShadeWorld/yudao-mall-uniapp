@@ -62,7 +62,7 @@ const app = defineStore({
       if (true) {
         this.info = {
           name: '昭明眼镜下单平台',
-          logo: 'https://www.zhaomingyanjing.store/glass-manage/e46ed91aade0246463aae0e63e0126bbd275a22b26a0d4c3beff21cafe60709f.png',
+          logo: 'https://zhaomingyanjing.store/glass-manage/e46ed91aade0246463aae0e63e0126bbd275a22b26a0d4c3beff21cafe60709f.png',
           version: '1.0.0',
           copyright: '丹阳市开发区锦尚光学眼镜商行 保留所有权利',
           copytime: 'Copyright© 2024',

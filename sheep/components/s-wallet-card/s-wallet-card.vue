@@ -30,7 +30,7 @@
 		</view>
 		<view class="menu-item ss-flex-col ss-row-center ss-col-center menu-wallet"
           @tap="sheep.$router.go('/pages/user/wallet/money')">
-			<image class="item-icon" :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/762d192571e2d207c7a8782b302559f1c19e3e12e418c3f7d887e085435bec0e.png')" mode="aspectFit" />
+			<image class="item-icon" :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/762d192571e2d207c7a8782b302559f1c19e3e12e418c3f7d887e085435bec0e.png')" mode="aspectFit" />
 			<view class="menu-title ss-m-t-30">我的钱包</view>
 		</view>
 	</view>

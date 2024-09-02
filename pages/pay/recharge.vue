@@ -50,7 +50,7 @@
 
   const userWallet = computed(() => sheep.$store('user').userWallet);
 	const statusBarHeight = sheep.$platform.device.statusBarHeight * 2;
-	const headerBg = sheep.$url.css('https://www.zhaomingyanjing.store/glass-manage/c9aeef7e970b76991668740263d518f25ce737b1552db9ee7b22d8572a4a5110.png');
+	const headerBg = sheep.$url.css('https://zhaomingyanjing.store/glass-manage/c9aeef7e970b76991668740263d518f25ce737b1552db9ee7b22d8572a4a5110.png');
 
 	const state = reactive({
 		recharge_money: '', // 输入的充值金额

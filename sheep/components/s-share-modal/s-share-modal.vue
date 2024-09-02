@@ -29,7 +29,7 @@
           >
             <image
               class="share-img"
-              :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/98ec7db66662df12c6e84bad4ba41029424650d50981952450a3c9ee1772f76b.png')"
+              :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/98ec7db66662df12c6e84bad4ba41029424650d50981952450a3c9ee1772f76b.png')"
               mode=""
             />
             <text class="share-title">生成海报</text>
@@ -41,7 +41,7 @@
             class="share-item share-btn ss-flex-col ss-col-center"
             @tap="onShareByCopyLink"
           >
-            <image class="share-img" :src="sheep.$url.static('https://www.zhaomingyanjing.store/glass-manage/64bdb36278d3dc45e998840c002fc019c22716174be029f541488de2fb415db7.png')" mode="" />
+            <image class="share-img" :src="sheep.$url.static('https://zhaomingyanjing.store/glass-manage/64bdb36278d3dc45e998840c002fc019c22716174be029f541488de2fb415db7.png')" mode="" />
             <text class="share-title">复制链接</text>
           </button>
         </view>
