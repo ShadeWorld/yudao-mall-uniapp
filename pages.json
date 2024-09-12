@@ -38,6 +38,7 @@
 				"navigationBarTitleText": "商品分类"
 			},
 			"meta": {
+				"auth": false,
 				"sync": true,
 				"title": "商品分类",
 				"group": "商城"

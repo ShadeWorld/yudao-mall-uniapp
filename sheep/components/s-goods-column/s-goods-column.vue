@@ -29,7 +29,7 @@
           :style="[{ color: goodsFields.price.color }]"
         >
           <text class="price-unit ss-font-24">{{ priceUnit }}</text>
-          {{ isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) }}
+          {{ isLogin ? isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) : '???' }}
         </view>
       </view>
     </view>
@@ -55,7 +55,7 @@
           :style="[{ color: goodsFields.price.color }]"
         >
           <text class="price-unit ss-font-24">{{ priceUnit }}</text>
-          {{ isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) }}
+          {{ isLogin ? isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) : '???' }}
         </view>
       </view>
     </view>
@@ -102,7 +102,7 @@
             :style="[{ color: goodsFields.price.color }]"
           >
             <text class="price-unit ss-font-24">{{ priceUnit }}</text>
-            {{ isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) }}
+            {{ isLogin ? isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) : '???' }}
           </view>
 
           <view
@@ -174,7 +174,7 @@
               :style="[{ color: goodsFields.price.color }]"
             >
               <text class="ss-font-24">{{ priceUnit }}</text>
-              {{ isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) }}
+              {{ isLogin ? isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) : '???' }}
             </view>
             <view
               v-if="(goodsFields.original_price?.show||goodsFields.marketPrice?.show) &&( data.original_price > 0|| data.marketPrice > 0)"
@@ -238,7 +238,7 @@
           <view v-if="goodsFields.price?.show" class="ss-flex ss-col-bottom font-OPPOSANS">
             <view class="sl-goods-price ss-m-r-12" :style="[{ color: goodsFields.price.color }]">
               <text class="price-unit ss-font-24">{{ priceUnit }}</text>
-              {{ isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) }}
+              {{ isLogin ? isArray(data.price) ? fen2yuan(data.price[0]) : fen2yuan(data.price) : '???' }}
             </view>
             <view
               v-if="(goodsFields.original_price?.show||goodsFields.marketPrice?.show) &&( data.original_price > 0|| data.marketPrice > 0)"
@@ -295,6 +295,8 @@
   import sheep from '@/sheep';
   import { fen2yuan, formatSales, formatStock } from '@/sheep/hooks/useGoods';
   import { isArray } from 'lodash';
+
+  const isLogin = computed(() => sheep.$store('user').isLogin)
 
   // 数据
   const state = reactive({});

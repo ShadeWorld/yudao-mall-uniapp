@@ -21,7 +21,7 @@
             <view class="ss-flex ss-row-between ss-col-center ss-m-b-26">
               <view class="price-box ss-flex ss-col-bottom">
                 <view class="price-text ss-m-r-16">
-                  {{ priceRange }}
+                  {{ isLogin ? priceRange : '???' }}
                 </view>
                 <view class="origin-price-text" v-if="state.goodsInfo.marketPrice > 0">
                   {{ fen2yuan(state.selectedSku.marketPrice || state.goodsInfo.marketPrice) }}
@@ -139,6 +139,8 @@
 
   onPageScroll(() => {
   });
+
+  const isLogin = computed(() => sheep.$store('user').isLogin)
 
   const state = reactive({
     goodsId: 0,
