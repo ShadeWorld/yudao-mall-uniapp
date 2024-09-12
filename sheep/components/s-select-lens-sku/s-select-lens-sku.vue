@@ -81,9 +81,9 @@
                 </view>
               </uni-col>
               <uni-col :span="3" style="padding-left: 8rpx" v-if="showAxis">
-                <view class="num-input">
-                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false"
-                                 @change="lens.axis = $event === 0 ? 1 : $event" />
+                <view class="num-input" :class="{'disabled-btn': !lens.cyl}">
+                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false" :disabled="!lens.cyl"
+                                 @change="lens.axis = $event" :color="!lens.cyl ? '#c6c6c6' : undefined" />
                 </view>
               </uni-col>
               <uni-col :span="3" style="padding-left: 8rpx">
@@ -155,16 +155,14 @@
 
   const formatLens = (value) => {
     if (value) {
-      return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2)
+      return value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2);
     } else {
-      return '0.00'
+      return '0.00';
     }
-  }
+  };
 
   const showAxis = computed(() => {
-    return props.goodsInfo.skus.findIndex(i => {
-      return (i.skuLens.minCyl !== 0 || i.skuLens.maxCyl !== 0) && (i.skuLens.minAdd !== 0 || i.skuLens.maxAdd !== 0);
-    }) > -1;
+    return props.goodsInfo.skus.findIndex(i => i.skuLens.minCyl !== 0 || i.skuLens.maxCyl !== 0) > -1;
   });
 
   const state = reactive({
