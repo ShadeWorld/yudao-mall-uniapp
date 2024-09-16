@@ -84,6 +84,7 @@
     }));
     sheep.$router.go('/pages/order/confirm', {
       data: JSON.stringify({
+        type: 1,
         items,
         deliveryType: 1,
         pointStatus: false,

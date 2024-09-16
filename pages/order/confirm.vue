@@ -269,6 +269,7 @@
   // 创建订单&跳转
   async function submitOrder() {
     const { code, data } = await OrderApi.createOrder({
+      type: state.orderPayload.type,
       items: state.orderPayload.items,
       craftList: state.orderPayload.craftList,
       couponId: state.orderPayload.couponId,
@@ -346,7 +347,6 @@
       return;
     }
     state.orderPayload = JSON.parse(options.data);
-    console.log(state.orderPayload);
     await getOrderInfo();
     await getCoupons();
     await getDeliveryTemplates();

@@ -57,16 +57,14 @@
               </uni-col>
               <uni-col :span="3" class="col-item">
                 <view class="ss-flex ss-flex-wrap ss-row-center">
-                  <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('cyl', index)"
-                          :disabled="!lens.sph" :class="{'disabled-btn': !lens.sph}">
+                  <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('cyl', index)">
                     {{ lens.cyl.toFixed(2) }}
                   </button>
                 </view>
               </uni-col>
               <uni-col :span="3" class="col-item">
                 <view class="ss-flex ss-flex-wrap ss-row-center">
-                  <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('add', index)"
-                          :disabled="!lens.sph && !lens.cyl" :class="{'disabled-btn': !lens.sph && !lens.cyl}">
+                  <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('add', index)">
                     {{ lens.add.toFixed(2) }}
                   </button>
                 </view>
@@ -82,7 +80,8 @@
               </uni-col>
               <uni-col :span="3" style="padding-left: 8rpx" v-if="showAxis">
                 <view class="num-input" :class="{'disabled-btn': !lens.cyl}">
-                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false" :disabled="!lens.cyl"
+                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false"
+                                 :disabled="!lens.cyl"
                                  @change="lens.axis = $event" :color="!lens.cyl ? '#c6c6c6' : undefined" />
                 </view>
               </uni-col>
@@ -177,6 +176,21 @@
   });
   let defaultSkuLens;
 
+  const judgeLens = (sph, cyl, add) => {
+    let union = sph + cyl;
+    let index = props.goodsInfo.skus.findIndex((sku) => {
+      let lens = sku.skuLens;
+      return between(cyl, [lens.minCyl, lens.maxCyl])
+        && between(sph, [lens.minSph, lens.maxSph])
+        && between(add, [lens.minAdd, lens.maxAdd])
+        && lens.skipSph.indexOf(sph) === -1
+        && lens.skipCyl.indexOf(cyl) === -1
+        && lens.skipAdd.indexOf(add) === -1
+        && (between(union, [lens.maxUnion, lens.minUnion]) || (lens.maxUnion === 0 && lens.minUnion === 0));
+    });
+    return index > -1;
+  }
+
   const calcAvlDegrees = (type, index) => {
     state.avlDegrees.splice(0);
     state.selectedType = type;
@@ -184,6 +198,12 @@
     state.showSelectDegree = true;
     let degrees = [];
     let minDegree, maxDegree;
+    // 当前选中行的cyl
+    let sph = state.lensList[state.selectedRowIndex].sph;
+    // 当前选中行的cyl
+    let cyl = state.lensList[state.selectedRowIndex].cyl;
+    // 当前选中行的add
+    let add = state.lensList[state.selectedRowIndex].add;
     switch (type) {
       case 'sph':
         props.goodsInfo.skus.map((sku) => degrees.push(sku.skuLens.minSph, sku.skuLens.maxSph));
@@ -191,11 +211,7 @@
         minDegree = degrees[0];
         maxDegree = degrees[degrees.length - 1];
         for (let i = minDegree; i <= maxDegree; i += 0.25) {
-          let index = props.goodsInfo.skus.findIndex((sku) => {
-            let lens = sku.skuLens;
-            return between(i, [lens.minSph, lens.maxSph]) && lens.skipSph.indexOf(i) === -1;
-          });
-          if (index > -1) {
+          if (judgeLens(i, cyl, add)) {
             state.avlDegrees.push({ name: formatLens(i), value: i });
           }
         }
@@ -206,16 +222,7 @@
         minDegree = degrees[0];
         maxDegree = degrees[degrees.length - 1];
         for (let i = minDegree; i <= maxDegree; i += 0.25) {
-          let sph = state.lensList[state.selectedRowIndex].sph;
-          let union = i + sph;
-          let index = props.goodsInfo.skus.findIndex((sku) => {
-            let lens = sku.skuLens;
-            return between(i, [lens.minCyl, lens.maxCyl])
-              && between(sph, [lens.minSph, lens.maxSph])
-              && lens.skipCyl.indexOf(i) === -1 && lens.skipSph.indexOf(sph) === -1
-              && (between(union, [lens.maxUnion, lens.minUnion]) || (lens.maxUnion === 0 && lens.minUnion === 0));
-          });
-          if (index > -1) {
+          if (judgeLens(sph, i, add)) {
             state.avlDegrees.push({ name: formatLens(i), value: i });
           }
         }
@@ -226,14 +233,7 @@
         minDegree = degrees[0];
         maxDegree = degrees[degrees.length - 1];
         for (let i = minDegree; i <= maxDegree; i += 0.25) {
-          let sph = state.lensList[state.selectedRowIndex].sph;
-          let index = props.goodsInfo.skus.findIndex((sku) => {
-            let lens = sku.skuLens;
-            return between(i, [lens.minAdd, lens.maxAdd])
-              && between(sph, [lens.minSph, lens.maxSph])
-              && lens.skipAdd.indexOf(i) === -1 && lens.skipSph.indexOf(sph) === -1;
-          });
-          if (index > -1) {
+          if (judgeLens(sph, cyl, i)) {
             state.avlDegrees.push({ name: formatLens(i), value: i });
           }
         }
