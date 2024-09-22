@@ -30,16 +30,16 @@
               <uni-col :span="3">
                 <view class="col-item">柱镜</view>
               </uni-col>
+              <uni-col :span="3"
+                       v-if="showAxis">
+                <view class="col-item">轴位</view>
+              </uni-col>
               <uni-col :span="3">
                 <view class="col-item">ADD</view>
               </uni-col>
               <uni-col :span="3"
                        v-if="goodsInfo.lensProperty.distinguishEye">
                 <view class="col-item">左右</view>
-              </uni-col>
-              <uni-col :span="3"
-                       v-if="showAxis">
-                <view class="col-item">轴位</view>
               </uni-col>
               <uni-col :span="3">
                 <view class="col-item">数量</view>
