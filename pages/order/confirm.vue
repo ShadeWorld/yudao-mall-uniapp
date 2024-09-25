@@ -154,6 +154,7 @@
     <s-delivery-select
       v-model="state.deliveryTemplateInfo"
       :show="state.showDeliveryTemplate"
+      :show-free="state.showFreeDelivery"
       @confirm="onSelectDelivery"
       @close="state.showDeliveryTemplate = false"
     />
@@ -184,7 +185,7 @@
   </s-layout>
 </template>
 
-<script setup>
+<script  setup>
   import { reactive } from 'vue';
   import { onLoad } from '@dcloudio/uni-app';
   import sheep from '@/sheep';
@@ -209,6 +210,7 @@
     couponInfo: [], // 优惠劵列表
     showDeliveryTemplate: false, // 是否展示配送方式
     deliveryTemplateInfo: [], // 配送方式列表
+    showFreeDelivery: {},
     showDiscount: false, // 是否展示营销活动
   });
 
@@ -250,9 +252,10 @@
     state.showCoupon = false;
   }
 
-  // 选择优惠券
-  async function onSelectDelivery(deliveryTemplateId) {
+  // 选择配送方式
+  async function onSelectDelivery(deliveryTemplateId, mainOrderId) {
     state.orderPayload.deliveryTemplateId = deliveryTemplateId || 0;
+    state.orderPayload.mainOrderId = mainOrderId;
     await getOrderInfo();
     state.showDeliveryTemplate = false;
   }
@@ -274,6 +277,7 @@
       craftList: state.orderPayload.craftList,
       couponId: state.orderPayload.couponId,
       addressId: state.addressInfo.id,
+      mainOrderId: state.orderPayload.mainOrderId,
       deliveryTemplateId: state.orderInfo.deliveryTemplateId,
     });
     if (code !== 0) {
@@ -293,6 +297,7 @@
   async function getOrderInfo() {
     // 计算价格
     const { data, code } = await OrderApi.settlementOrder({
+      mainOrderId: state.orderPayload.mainOrderId,
       deliveryTemplateId: state.orderPayload.deliveryTemplateId,
       items: state.orderPayload.items,
       craftList: state.orderPayload.craftList,
@@ -338,6 +343,10 @@
           i.selected = true;
         }
       });
+    }
+    const showFreeRes = await DeliveryApi.showFreeDelivery();
+    if (showFreeRes.code === 0) {
+      state.showFreeDelivery = showFreeRes.data;
     }
   }
 

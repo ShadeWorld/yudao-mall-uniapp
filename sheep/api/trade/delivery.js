@@ -15,6 +15,13 @@ const DeliveryApi = {
       method: 'get',
     });
   },
+  // 是否展示五点前免运费
+  showFreeDelivery: () => {
+    return request({
+      url: `/trade/delivery/express-template/showFreeDelivery`,
+      method: 'get',
+    });
+  },
 };
 
 export default DeliveryApi;

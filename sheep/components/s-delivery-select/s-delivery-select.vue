@@ -1,6 +1,7 @@
 <script setup>
   import { computed, reactive, watch } from 'vue';
   import { fen2yuan } from '@/sheep/hooks/useGoods';
+  import SuPopup from '@/sheep/ui/su-popup/su-popup.vue';
 
   const props = defineProps({
     modelValue: { // 配送方式列表
@@ -12,6 +13,10 @@
       type: Boolean,
       default: false,
     },
+    showFree: {
+      type: Object,
+      default: false,
+    },
   });
 
   const emits = defineEmits(['confirm', 'close']);
@@ -19,20 +24,18 @@
   const state = reactive({
     deliveryTemplateInfo: computed(() => props.modelValue), // 配送方式列表
     deliveryTemplateId: null, // 选中的配送方式编号
+    mainOrderId: null // 主订单id（配送方式选了五点前免运费这个字段才有值）
   });
 
   // 选中配送方式
-  function radioChange(deliveryTemplateId) {
-    if (state.deliveryTemplateId === deliveryTemplateId) {
-      state.deliveryTemplateId = 0;
-    } else {
-      state.deliveryTemplateId = deliveryTemplateId;
-    }
+  function radioChange(deliveryTemplateId, mainOrderId = null) {
+    state.deliveryTemplateId = deliveryTemplateId
+    state.mainOrderId = mainOrderId
   }
 
   // 确认配送方式
   const onConfirm = () => {
-    emits('confirm', state.deliveryTemplateId);
+    emits('confirm', state.deliveryTemplateId, state.mainOrderId);
   };
 
 </script>
@@ -69,8 +72,24 @@
                   <radio
                     color="var(--ui-BG-Main)"
                     style="transform: scale(0.8)"
-                    :checked="state.deliveryTemplateId === item.id || item.selected"
+                    :checked="(state.deliveryTemplateId === item.id || item.selected) && !state.mainOrderId"
                     @tap.stop="radioChange(item.id)"
+                  />
+                </label>
+              </view>
+              <view  v-if="showFree?.deliveryTemplateId" class="order-item ss-flex ss-col-center ss-row-between">
+                <view class="item-title">加单免运费（五点前）</view>
+                <view class="ss-flex ss-col-center">
+                  <text class="item-value ss-m-r-24">
+                    ￥0
+                  </text>
+                </view>
+                <label class="ss-flex ss-col-center" @tap="radioChange(showFree.deliveryTemplateId, showFree.id)">
+                  <radio
+                    color="var(--ui-BG-Main)"
+                    style="transform: scale(0.8)"
+                    :checked="state.deliveryTemplateId === showFree.deliveryTemplateId && state.mainOrderId"
+                    @tap.stop="radioChange(showFree.deliveryTemplateId, showFree.id)"
                   />
                 </label>
               </view>
