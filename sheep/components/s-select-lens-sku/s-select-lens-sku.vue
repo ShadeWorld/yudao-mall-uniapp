@@ -62,6 +62,13 @@
                   </button>
                 </view>
               </uni-col>
+              <uni-col :span="3" style="padding-left: 8rpx" v-if="showAxis">
+                <view class="num-input" :class="{'disabled-btn': !lens.cyl}">
+                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false"
+                                 :disabled="!lens.cyl"
+                                 @change="lens.axis = $event" :color="!lens.cyl ? '#c6c6c6' : undefined" />
+                </view>
+              </uni-col>
               <uni-col :span="3" class="col-item">
                 <view class="ss-flex ss-flex-wrap ss-row-center">
                   <button class="ss-reset-button spec-btn lens-btn" @tap="calcAvlDegrees('add', index)">
@@ -76,13 +83,6 @@
                           v-if="goodsInfo.lensProperty.distinguishEye">
                     {{ lens.leftOrRight === undefined ? '' : lens.leftOrRight === 1 ? '左' : '右' }}
                   </button>
-                </view>
-              </uni-col>
-              <uni-col :span="3" style="padding-left: 8rpx" v-if="showAxis">
-                <view class="num-input" :class="{'disabled-btn': !lens.cyl}">
-                  <su-number-box :min="0" :max="180" :step="1" v-model="lens.axis" :controls="false"
-                                 :disabled="!lens.cyl"
-                                 @change="lens.axis = $event" :color="!lens.cyl ? '#c6c6c6' : undefined" />
                 </view>
               </uni-col>
               <uni-col :span="3" style="padding-left: 8rpx">
