@@ -272,6 +272,7 @@
   // 创建订单&跳转
   async function submitOrder() {
     const { code, data } = await OrderApi.createOrder({
+      remark: state.orderPayload.remark,
       type: state.orderPayload.type,
       items: state.orderPayload.items,
       craftList: state.orderPayload.craftList,
