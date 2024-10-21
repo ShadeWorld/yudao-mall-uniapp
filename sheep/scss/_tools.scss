@@ -284,3 +284,14 @@
 .ss-reset-button::after {
   border: none;
 }
+
+/* ==================
+    网格布局
+ ==================== */
+.ss-grid {
+  display: grid;
+}
+
+.ss-grid-col-2 {
+  grid-template-columns: 1fr 1fr;
+}

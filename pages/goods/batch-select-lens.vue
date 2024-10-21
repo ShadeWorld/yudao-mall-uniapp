@@ -108,6 +108,9 @@
   const bodyWidth = ref('100%');
   // 普通镜片，只有球柱镜
   const isNormal = computed(() => state.minAdd === 0 && state.maxAdd === 0);
+  // 总数量
+  const totalCount = computed(() => rows.value.reduce((a, b) => a + b.cols ? b.cols.filter(col => col.count).map(col => col.count).reduce((a, b) => a + b, 0) : 0, 0));
+
 
   const between = (target, interval) => {
     interval.sort((a, b) => a - b);
@@ -421,12 +424,22 @@
             <view>
               <button class="ss-reset-button range-btn ss-r-40 ui-BG-Main-Gradient" @tap="state.showRangeInput = true">区间选择</button>
             </view>
-            <view class="ss-flex ss-col-center ss-row-between">
-              <view class="label-wrap">
-                输入数量：
+            <view class="ss-grid">
+              <view class="ss-grid ss-grid-col-2">
+                <view class="label-wrap" style="text-align: right;">
+                  输入数量：
+                </view>
+                <su-number-box :min="0" :step="1" @change="countChange" v-model="state.inputCount"
+                               :disabled="state.selectedCols.length === 0" />
               </view>
-              <su-number-box :min="0" :step="1" @change="countChange" v-model="state.inputCount"
-                             :disabled="state.selectedCols.length === 0" />
+              <view class="ss-grid ss-grid-col-2">
+                <view class="label-wrap" style="text-align: right;">
+                  总数量：
+                </view>
+                <view style="text-align: center">
+                  {{ rows.filter(row => row.cols && row.cols.find(col => col.count)).reduce((a, b) => a + b.cols.filter(col => col.count).map(col => col.count).reduce((a1, b1) => a1 + b1, 0), 0) }}
+                </view>
+              </view>
             </view>
           </view>
         </su-fixed>
