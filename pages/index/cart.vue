@@ -93,10 +93,10 @@
     if (item.cartLens) {
       let content = '球镜:' + formatLens(item.cartLens.sph) + ' 柱镜:' + formatLens(item.cartLens.cyl) + ' 加光:' + formatLens(item.cartLens.add);
       if (item.cartLens.leftOrRight) {
-        content += ` ${item.cartLens.leftOrRight === 1 ? '左眼' : '右眼'}`
+        content += ` ${item.cartLens.leftOrRight === 1 ? '左眼' : '右眼'}`;
       }
       if (item.cartLens.hasOwnProperty('axis') && Number.isFinite(item.cartLens.axis)) {
-        content += ` 轴位: ${item.cartLens.axis}`
+        content += ` 轴位: ${item.cartLens.axis}`;
       }
       return content;
     } else {
@@ -130,17 +130,17 @@
           count: item.count,
           cartId: item.id,
           categoryId: item.spu.categoryId,
-          orderLensList: []
-        }
+          orderLensList: [],
+        };
         // 此处前端做出修改
         items.push(value);
       } else {
-        value.count += item.count
+        value.count += item.count;
       }
       if (item.hasOwnProperty('cartLens')) {
         let orderLens = cloneDeep(item.cartLens);
         orderLens.count = item.count;
-        value.orderLensList.push(orderLens);
+        value.orderLensList.push({ ...orderLens, cartId: item.id });
       }
       goods_list.push({
         // goods_id: item.goods_id,

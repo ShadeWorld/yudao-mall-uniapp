@@ -50,6 +50,7 @@ const OrderApi = {
   // 创建订单
   createOrder: (data) => {
     return request({
+      timeout: 30000,
       url: `/trade/order/create`,
       method: 'POST',
       data,
