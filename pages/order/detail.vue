@@ -298,6 +298,9 @@
       if (item.hasOwnProperty('axis') && Number.isFinite(item.axis)) {
         content += ` 轴位: ${item.axis}`
       }
+      if (item.hasOwnProperty('diameter') && item.diameter) {
+        content += ` 直径: ${item.diameter}`;
+      }
       return content;
     } else {
       return item.properties.map((property) => property.valueName).join(' ');

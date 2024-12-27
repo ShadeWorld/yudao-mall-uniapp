@@ -57,6 +57,9 @@
       if (item.cartLens.hasOwnProperty('axis') && Number.isFinite(item.cartLens.axis)) {
         content += ` 轴位: ${item.cartLens.axis}`;
       }
+      if (item.cartLens.hasOwnProperty('diameter') && item.cartLens.diameter) {
+        content += ` 直径: ${item.cartLens.diameter}`;
+      }
       return content;
     } else {
       return item.sku.properties.length > 1 ? item.sku.properties.reduce((items2, items) => items2.valueName + ' ' + items.valueName) : item.sku.properties[0].valueName;

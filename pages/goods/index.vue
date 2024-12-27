@@ -215,12 +215,14 @@
             leftOrRight: item.leftOrRight,
             axis: item.axis,
             count: item.goods_num,
+            diameter: item.diameter,
           });
         }
       });
       data.deliveryType = 1;
       data.pointStatus = false;
     } else {
+      // 这里是非镜片的商品
       if (!state.selectedSku.id) {
         sheep.$helper.toast('请选择商品规格');
         return;

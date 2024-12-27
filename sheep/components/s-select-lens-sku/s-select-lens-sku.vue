@@ -41,10 +41,14 @@
                        v-if="goodsInfo.lensProperty.distinguishEye">
                 <view class="col-item">左右</view>
               </uni-col>
+              <uni-col :span="3"
+                       v-if="goodsInfo.categoryId === 2">
+                <view class="col-item">直径</view>
+              </uni-col>
               <uni-col :span="3">
                 <view class="col-item">数量</view>
               </uni-col>
-              <uni-col :span="12">
+              <uni-col :span="3">
               </uni-col>
             </uni-row>
             <uni-row class="ss-flex ss-row-between tb-row" v-for="(lens, index) in state.lensList">
@@ -85,16 +89,25 @@
                   </button>
                 </view>
               </uni-col>
+              <uni-col :span="3" class="col-item">
+                <view class="ss-flex ss-flex-wrap ss-row-center">
+                  <button class="ss-reset-button spec-btn lens-btn"
+                          @tap="() => {state.showSelectDiameter = true; state.selectedRowIndex = index;}"
+                          v-if="goodsInfo.categoryId === 2">
+                    {{ lens.diameter }}
+                  </button>
+                </view>
+              </uni-col>
               <uni-col :span="3" style="padding-left: 8rpx">
                 <view class="num-input">
                   <su-number-box :min="1" :step="1" v-model="lens.goods_num" :controls="false"
                                  @change="lens.goods_num = $event === 0 ? 1 : $event" />
                 </view>
               </uni-col>
-              <uni-col :span="6" class="del-btn-item">
-                <button class="ss-reset-button remove-btn mini-btn"
+              <uni-col :span="3" class="del-btn-item">
+                <button class="ss-reset-button remove-btn" style="margin-bottom: 8rpx"
                         :class="{'disabled-btn': state.lensList.length <= 1}" :disabled="state.lensList.length <= 1"
-                        size="mini" @tap="removeSku(index)">删除
+                        @tap="removeSku(index)">-
                 </button>
               </uni-col>
             </uni-row>
@@ -112,6 +125,11 @@
         <select-degree :show="state.showSelectLeftOrRight" :degrees="[{name:'左', value: 1},{name:'右', value: 2}]"
                        :selected="state.selectedLeftOrRight"
                        @close="state.showSelectLeftOrRight = false" @on-select="onSelectLeftOrRight" />
+        <!-- 选择直径弹窗 -->
+        <select-degree :show="state.showSelectDiameter"
+                       :degrees="[{name:'50', value: 50},{name:'55', value: 55},{name:'60', value: 60},{name:'65', value: 65},{name:'70', value: 70},{name:'75', value: 75},{name:'80', value: 80}]"
+                       :selected="state.selectedDiameter"
+                       @close="state.showSelectDiameter = false" @on-select="onSelectDiameter" />
       </view>
 
       <!-- 操作区 -->
@@ -165,6 +183,8 @@
   });
 
   const state = reactive({
+    showSelectDiameter: false,
+    selectedDiameter: undefined,
     showSelectLeftOrRight: false,
     selectedLeftOrRight: undefined,
     showSelectDegree: false,
@@ -189,7 +209,7 @@
         && (between(union, [lens.maxUnion, lens.minUnion]) || (lens.maxUnion === 0 && lens.minUnion === 0));
     });
     return index > -1;
-  }
+  };
 
   const calcAvlDegrees = (type, index) => {
     state.avlDegrees.splice(0);
@@ -281,6 +301,10 @@
 
   const onSelectLeftOrRight = (leftOrRight) => {
     state.lensList[state.selectedRowIndex].leftOrRight = leftOrRight;
+  };
+
+  const onSelectDiameter = (diameter) => {
+    state.lensList[state.selectedRowIndex].diameter = diameter;
   };
 
   const addSku = () => {
@@ -494,8 +518,9 @@
           font-size: 15px;
 
           .remove-btn {
-            margin-left: 10px;
-            border-radius: 40rpx;
+            height: 30px !important;
+            max-width: 30px !important;
+            border-radius: 50px;
             background-color: var(--ui-BG-Main-light);
             color: var(--ui-BG-Main);
           }

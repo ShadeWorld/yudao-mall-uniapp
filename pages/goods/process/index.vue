@@ -130,6 +130,9 @@
     if (item.hasOwnProperty('axis') && Number.isFinite(item.axis)) {
       content += ` 轴位: ${item.axis}`;
     }
+    if (item.hasOwnProperty('diameter') && item.diameter) {
+      content += ` 轴位: ${item.diameter}`;
+    }
     return content;
   }
 
